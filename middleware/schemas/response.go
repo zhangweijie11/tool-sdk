@@ -21,9 +21,24 @@ func ReturnJson(Context *gin.Context, httpCode int, dataCode int, msg string, da
 	})
 }
 
-// Success 成功的请求
-func Success(ctx *gin.Context, data interface{}) {
+// SuccessGet 获取成功
+func SuccessGet(ctx *gin.Context, data interface{}) {
 	ReturnJson(ctx, http.StatusOK, CurdStatusOkCode, CurdStatusOkMsg, data)
+}
+
+// SuccessDelete 删除成功
+func SuccessDelete(ctx *gin.Context, data interface{}) {
+	ReturnJson(ctx, http.StatusNoContent, CurdStatusOkCode, CurdStatusOkMsg, data)
+}
+
+// SuccessUpdate 更新成功
+func SuccessUpdate(ctx *gin.Context, data interface{}) {
+	ReturnJson(ctx, http.StatusCreated, CurdStatusOkCode, CurdStatusOkMsg, data)
+}
+
+// SuccessCreate 创建成功
+func SuccessCreate(ctx *gin.Context, data interface{}) {
+	ReturnJson(ctx, http.StatusCreated, CurdStatusOkCode, CurdStatusOkMsg, data)
 }
 
 // Fail 失败的请求

@@ -5,10 +5,20 @@ import (
 	"gitlab.example.com/zhangweijie/tool-sdk/config"
 	"gitlab.example.com/zhangweijie/tool-sdk/global"
 	"gitlab.example.com/zhangweijie/tool-sdk/middleware/logger"
+	"gitlab.example.com/zhangweijie/tool-sdk/middleware/schemas"
+	"gitlab.example.com/zhangweijie/tool-sdk/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"time"
 )
+
+func AutoMigrate(availableModels []interface{}) {
+	//自动生成迁移脚本
+	err := global.Db.AutoMigrate(availableModels...)
+	if err != nil {
+		logger.Panic(schemas.DBErr, err)
+	}
+}
 
 // InitDatabase 初始化数据库连接
 func InitDatabase(cfg *config.DatabaseConfig) (err error) {
@@ -28,12 +38,7 @@ func InitDatabase(cfg *config.DatabaseConfig) (err error) {
 		return
 	}
 
-	////自动生成迁移脚本
-	//availableModels := []interface{}{}
-	//err = global.Db.AutoMigrate(availableModels...)
-	//if err != nil {
-	//	logger.Panic("数据库连接失败", err)
-	//}
+	AutoMigrate([]interface{}{&models.Work{}, &models.Task{}, &models.Result{}})
 
 	db, _ := global.Db.DB()
 	//设置数据库最大空闲连接数

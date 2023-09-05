@@ -47,14 +47,15 @@ func Start() error {
 		gin.SetMode(gin.ReleaseMode)
 	default:
 		gin.SetMode(gin.DebugMode)
-
 	}
 	//引用中间件
 	engine.Use(schemas.Cors())
 	engine.Use(logger.GinLogger())
 	engine.Use(logger.GinRecovery(true))
+
 	// 初始化路由
 	routers.InitPingRouter(engine)
+	routers.InitWorkRouter(engine)
 	server := &http.Server{
 		Addr:           ":" + global.Config.Server.RunPort,                             // 监听地址
 		MaxHeaderBytes: 1 << 20,                                                        // 1048576

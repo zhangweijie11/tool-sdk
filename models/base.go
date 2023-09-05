@@ -29,11 +29,11 @@ func (t *DBTime) UnmarshalJSON(data []byte) error {
 	return err
 }
 
-func (t DBTime) MarshalJSON() ([]byte, error) {
+func (t *DBTime) MarshalJSON() ([]byte, error) {
 	return utils.StrToBytes(fmt.Sprintf("\"%s\"", t.Format(global.TimeFormatSecond))), nil
 }
 
-func (t DBTime) Value() (driver.Value, error) {
+func (t *DBTime) Value() (driver.Value, error) {
 	var zero time.Time
 	if t.Time.UnixNano() == zero.UnixNano() {
 		return nil, nil

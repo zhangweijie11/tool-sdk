@@ -15,6 +15,8 @@ type Work struct {
 	CallbackType string         `gorm:"column:callback_type;size:64;not null;default:'';comment:回调方式" json:"callback_type"`
 	WorkType     string         `gorm:"column:work_type;size:64;not null;default:'';comment:任务类型" json:"work_type"`
 	Retry        uint8          `gorm:"column:retry;not null;default:0;comment:重试次数" json:"retry"`
+	Priority     uint8          `gorm:"column:priority;not null;default:0;comment:优先级" json:"priority"`
+	Progress     uint8          `gorm:"column:progress;not null;default:0;comment:进度" json:"progress"`
 	ComplexBaseModel
 }
 
