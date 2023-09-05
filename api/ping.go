@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"tool-sdk/middleware/schemas"
+	"gitlab.example.com/zhangweijie/tool-sdk/middleware/schemas"
 )
 
 // PingApi 服务连通性测试

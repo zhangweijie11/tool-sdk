@@ -1,12 +1,12 @@
 package logger
 
 import (
+	"gitlab.example.com/zhangweijie/tool-sdk/global"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
 	"path/filepath"
-	"tool-sdk/global"
 )
 
 const (

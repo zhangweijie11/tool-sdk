@@ -1,4 +1,4 @@
-package schemas
+package controller
 
 import (
 	"encoding/json"
@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
+	"gitlab.example.com/zhangweijie/tool-sdk/middleware/schemas"
 	"strings"
 )
 
@@ -57,7 +58,7 @@ func BindSchema(c *gin.Context, obj interface{}, bind binding.Binding) (err erro
 		default:
 			msg = "无效的请求参数"
 		}
-		Fail(c, msg)
+		schemas.Fail(c, msg)
 	}
 	return err
 }

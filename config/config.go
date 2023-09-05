@@ -16,6 +16,7 @@ type Cfg struct {
 	Server   ServerConfig   `yaml:"server"`
 	Elastic  ElasticConfig  `yaml:"elastic"`
 	Database DatabaseConfig `yaml:"database"`
+	Cache    CacheConfig    `yaml:"redis"`
 }
 
 type ServerConfig struct {
@@ -56,6 +57,16 @@ type DatabaseConfig struct {
 	LogLevel             logger.LogLevel `yaml:"log_level"`
 	SlowThreshold        int             `yaml:"slow_threshold"`
 	Activate             bool            `yaml:"activate"` // 是否激活
+}
+
+type CacheConfig struct {
+	Hosts      string `yaml:"hosts"`
+	Password   string `yaml:"password"`
+	MasterName string `yaml:"master_name"`
+	Sentinel   bool   `yaml:"sentinel"`
+	Database   int    `yaml:"database"`
+	PoolSize   int    `yaml:"pool_size"`
+	Activate   bool   `yaml:"activate"` // 是否激活
 }
 
 func Encrypt(sourceData []byte, secretKey string) string {

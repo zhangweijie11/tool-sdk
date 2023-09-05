@@ -1,10 +1,10 @@
 package initizlize
 
 import (
+	"gitlab.example.com/zhangweijie/tool-sdk/config"
+	"gitlab.example.com/zhangweijie/tool-sdk/global"
 	"gopkg.in/yaml.v3"
 	"os"
-	"tool-sdk/config"
-	"tool-sdk/global"
 )
 
 // 解密 config 文件中的加密数据

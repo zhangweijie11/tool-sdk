@@ -1,9 +1,9 @@
 package main
 
 import (
-	web "tool-sdk/cmd"
-	"tool-sdk/initizlize"
-	"tool-sdk/middleware/logger"
+	web "gitlab.example.com/zhangweijie/tool-sdk/cmd"
+	"gitlab.example.com/zhangweijie/tool-sdk/initizlize"
+	"gitlab.example.com/zhangweijie/tool-sdk/middleware/logger"
 )
 
 func main() {

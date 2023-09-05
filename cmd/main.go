@@ -2,14 +2,14 @@ package web
 
 import (
 	"github.com/gin-gonic/gin"
+	"gitlab.example.com/zhangweijie/tool-sdk/global"
+	"gitlab.example.com/zhangweijie/tool-sdk/initizlize"
+	"gitlab.example.com/zhangweijie/tool-sdk/middleware/logger"
+	"gitlab.example.com/zhangweijie/tool-sdk/middleware/schemas"
+	"gitlab.example.com/zhangweijie/tool-sdk/routers"
 	"net/http"
 	_ "net/http/pprof"
 	"time"
-	"tool-sdk/global"
-	"tool-sdk/initizlize"
-	"tool-sdk/middleware/logger"
-	"tool-sdk/middleware/schemas"
-	"tool-sdk/routers"
 )
 
 func Start() error {
@@ -27,6 +27,12 @@ func Start() error {
 	if global.Config.Database.Activate {
 		if err = initizlize.InitDatabase(&global.Config.Database); err != nil {
 			logger.Panic("数据库连接异常", err)
+		}
+	}
+
+	if global.Config.Cache.Activate {
+		if err = initizlize.InitCache(&global.Config.Cache); err != nil {
+			logger.Panic("缓存连接异常", err)
 		}
 	}
 

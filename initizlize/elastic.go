@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 	"github.com/olivere/elastic/v7"
-	"tool-sdk/config"
-	"tool-sdk/global"
-	"tool-sdk/middleware/logger"
+	"gitlab.example.com/zhangweijie/tool-sdk/config"
+	"gitlab.example.com/zhangweijie/tool-sdk/global"
+	"gitlab.example.com/zhangweijie/tool-sdk/middleware/logger"
 )
 
 // InitElastic  初始化 Elasticsearch，并创建相对应的索引

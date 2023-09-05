@@ -2,12 +2,12 @@ package initizlize
 
 import (
 	"fmt"
+	"gitlab.example.com/zhangweijie/tool-sdk/config"
+	"gitlab.example.com/zhangweijie/tool-sdk/global"
+	"gitlab.example.com/zhangweijie/tool-sdk/middleware/logger"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"time"
-	"tool-sdk/config"
-	"tool-sdk/global"
-	"tool-sdk/middleware/logger"
 )
 
 // InitDatabase 初始化数据库连接

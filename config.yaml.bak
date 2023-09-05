@@ -10,7 +10,6 @@ server:
   worker: 12
   secret_key: Q0KUsVY6ujMxBHS5wvoy4gi3AkGh8p9b # 加密密钥
   root_dir: /home/workspace/tool-sdk
-  mode: cloud_trace
 
 elastic:
   host: 127.0.0.1
@@ -34,3 +33,13 @@ database:
   log_level: 3   # 1:silent, 2:error, 3:warn; 4:info
   slow_threshold: 2000 # 慢SQL记录(毫秒)
   activate: true
+
+# 缓存配置
+cache:
+  hosts: 127.0.0.1  # 主机地址
+  password: foobar
+  master_name: mymaster
+  sentinel: false # 启用哨兵模式
+  database: 1
+  pool_size: 10 # 连接池
+  activate: false

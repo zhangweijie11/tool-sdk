@@ -2,7 +2,7 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	"tool-sdk/api"
+	"gitlab.example.com/zhangweijie/tool-sdk/api"
 )
 
 func InitPingRouter(engine *gin.Engine) gin.IRoutes {

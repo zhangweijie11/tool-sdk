@@ -22,7 +22,7 @@ git push -uf origin main
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](http://gitlab.example.com/zhangweijie/tool-sdk/-/settings/integrations)
+- [ ] [Set up project integrations](http://gitlab.example.com/zhangweijie/gitlab.example.com/zhangweijie/tool-sdk/-/settings/integrations)
 
 ## Collaborate with your team
 
