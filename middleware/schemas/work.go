@@ -17,3 +17,13 @@ type WorkDeleteSchema struct {
 type WorkGetInfoSchema struct {
 	WorkUUID string `json:"work_uuid" binding:"required"` // 唯一标识
 }
+
+// WorkPauseSchema 暂停总任务参数
+type WorkPauseSchema struct {
+	WorkUUID string `json:"work_uuid" binding:"required"` // 唯一标识
+}
+
+// WorkStopSchema 停止总任务参数
+type WorkStopSchema struct {
+	WorkUUID string `json:"work_uuid" binding:"required"` // 唯一标识
+}

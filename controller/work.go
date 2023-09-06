@@ -57,3 +57,19 @@ func DeleteWorkByWorkUUID(workUUID string) error {
 
 	return nil
 }
+
+// UpdateWorkByWorkUUID 更新总任务状态
+func UpdateWorkByWorkUUID(workUUID, column, newValue string) error {
+	// 查询数据是否存在
+	work, err := models.GetWorkByUUID(workUUID)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return errors.New(schemas.RecordNotFoundErr)
+	}
+	// 更新总任务状态
+	err = models.UpdateWork(work.UUID, column, newValue)
+	if err != nil {
+		return errors.New(schemas.RecordDeleteErr)
+	}
+
+	return nil
+}

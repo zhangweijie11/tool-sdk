@@ -20,8 +20,11 @@ var taskValidatorErrorMessage = map[string]string{
 
 // registerValidatorRule 注册参数验证错误消息, Key = e.StructNamespace(), value.key = e.Field()+e.Tag()
 var registerValidatorRule = map[string]map[string]string{
-	"WorkCreateSchema": taskValidatorErrorMessage,
-	"WorkDeleteSchema": taskValidatorErrorMessage,
+	"WorkCreateSchema":  taskValidatorErrorMessage,
+	"WorkDeleteSchema":  taskValidatorErrorMessage,
+	"WorkGetInfoSchema": taskValidatorErrorMessage,
+	"WorkPauseSchema":   taskValidatorErrorMessage,
+	"WorkStopSchema":    taskValidatorErrorMessage,
 }
 
 var (
@@ -30,10 +33,10 @@ var (
 	DBErr                 = "数据库错误"
 	RecordNotFoundErr     = "数据不存在"
 	RecordDeleteErr       = "数据删除错误"
+	RecordUpdateErr       = "数据更新错误"
 	NoTaskErr             = "没有相关任务"
 	UnSupportOperationErr = "不支持的操作"
 	InternalErr           = "内部错误"
-	Success               = "Success"
 )
 
 // serializeValidatorError 参数tag验证失败转换
@@ -41,7 +44,6 @@ func serializeValidatorError(e validator.FieldError) (message string) {
 	switch e.Field() {
 	default:
 		message = registerValidatorRule[strings.Split(e.StructNamespace(), ".")[0]][e.Field()+e.Tag()]
-		fmt.Println("------------>", message)
 	case "Page", "Size":
 		switch e.Tag() {
 		case "min":

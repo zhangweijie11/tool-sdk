@@ -21,7 +21,6 @@ func WorkCreateApi(c *gin.Context) {
 		msg, err := global.ValidParamsIns.ValidWorkCreateParams(schema.Params)
 		if err != nil {
 			schemas.Fail(c, msg)
-
 		} else {
 			if global.Config.Database.Activate {
 				jsonBytes, err := json.Marshal(schema.Params)
@@ -69,7 +68,7 @@ func WorkDeleteApi(c *gin.Context) {
 		if err != nil {
 			schemas.Fail(c, err.Error())
 		} else {
-			schemas.SuccessDelete(c, schemas.Success)
+			schemas.SuccessDelete(c, schemas.CurdStatusOkMsg)
 		}
 	}
 }
@@ -85,5 +84,30 @@ func WorkGetInfoApi(c *gin.Context) {
 			schemas.SuccessGet(c, work)
 		}
 	}
+}
 
+// WorkPauseApi 暂停总任务
+func WorkPauseApi(c *gin.Context) {
+	var schema = new(schemas.WorkGetInfoSchema)
+	if err := schemas.BindSchema(c, schema, binding.JSON); err == nil {
+		err = controller.UpdateWorkByWorkUUID(schema.WorkUUID, "status", global.WorkStatusPause)
+		if err != nil {
+			schemas.Fail(c, schemas.RecordUpdateErr)
+		} else {
+			schemas.SuccessUpdate(c, nil)
+		}
+	}
+}
+
+// WorkStopApi 停止总任务
+func WorkStopApi(c *gin.Context) {
+	var schema = new(schemas.WorkGetInfoSchema)
+	if err := schemas.BindSchema(c, schema, binding.JSON); err == nil {
+		err = controller.UpdateWorkByWorkUUID(schema.WorkUUID, "status", global.WorkStatusStop)
+		if err != nil {
+			schemas.Fail(c, schemas.RecordUpdateErr)
+		} else {
+			schemas.SuccessUpdate(c, nil)
+		}
+	}
 }

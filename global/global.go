@@ -29,5 +29,6 @@ const (
 	WorkStatusDone      = "done"
 	WorkStatusFailed    = "failed"
 	WorkStatusPause     = "pause"
+	WorkStatusStop      = "stop"
 	WorkStatusCancelled = "cancelled"
 )
