@@ -18,7 +18,7 @@ import (
 func WorkCreateApi(c *gin.Context) {
 	var schema = new(schemas.WorkCreateSchema)
 	if err := schemas.BindSchema(c, schema, binding.JSON); err == nil {
-		msg, err := global.ValidParamsIns.ValidWorkCreateParams(schema.Params)
+		msg, err := global.ValidExecutorIns.ValidWorkCreateParams(schema.Params)
 		if err != nil {
 			schemas.Fail(c, msg)
 		} else {

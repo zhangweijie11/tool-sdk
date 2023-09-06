@@ -2,7 +2,7 @@ package global
 
 type ExecutorInterface interface {
 	ValidWorkCreateParams(map[string]interface{}) (string, error)
-	ExecutorMainFunc(interface{}) (string, error)
+	ExecutorMainFunc(interface{}) error
 }
 
 type ExecutorIns struct{}

@@ -13,7 +13,7 @@ func main() {
 	if err != nil {
 		logger.Panic("加载配置文件出现错误", err)
 	}
-	global.ValidParamsIns = global.NewParamsIns()
+	global.ValidExecutorIns = global.NewExecutorIns()
 	err = web.Start()
 	if err != nil {
 		logger.Panic("启动服务出现错误", err)

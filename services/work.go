@@ -31,8 +31,8 @@ func getPendingWork() (interface{}, error) {
 	return nil, nil
 }
 
-// LoopExecutionWork  执行任务
-func LoopExecutionWork() {
+// LoopExecuteWork  执行任务
+func LoopExecuteWork() {
 	for {
 		select {
 		// 限制全局并发任务执行数量
@@ -41,7 +41,7 @@ func LoopExecutionWork() {
 				oldSchema, err := getPendingWork()
 				if err == nil {
 					// 开始执行任务
-					_, err = global.ValidExecutorIns.ExecutorMainFunc(oldSchema.(models.Work))
+					err = global.ValidExecutorIns.ExecutorMainFunc(oldSchema.(models.Work))
 					if err != nil {
 						logger.Error(schemas.ExecuteWorkErr, err)
 					}
