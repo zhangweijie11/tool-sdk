@@ -69,3 +69,13 @@ func GetWorkByUUID(workUUID string) (Work, error) {
 
 	return work, nil
 }
+
+// GetWorkOrderCreateTime 根据创建时间排序获取待执行的任务
+func GetWorkOrderCreateTime() (Work, error) {
+	var work Work
+	if err := global.Db.Where("status = ?", global.WorkStatusPending).Order("create_time asc").Find(&work).Error; err != nil {
+		return work, err
+	}
+
+	return work, nil
+}

@@ -34,7 +34,9 @@ var (
 	RecordNotFoundErr     = "数据不存在"
 	RecordDeleteErr       = "数据删除错误"
 	RecordUpdateErr       = "数据更新错误"
-	NoTaskErr             = "没有相关任务"
+	GetWorkErr            = "查询任务错误"
+	UpdateWorkErr         = "更新任务错误"
+	ExecuteWorkErr        = "执行任务错误"
 	UnSupportOperationErr = "不支持的操作"
 	InternalErr           = "内部错误"
 )

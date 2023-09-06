@@ -38,3 +38,12 @@ func LoadConfig(config string) (err error) {
 	//decryptConfig(global.Config)
 	return err
 }
+
+func InitWorker(workerNum int) (err error) {
+	global.ValidWorkChan.WorkExecute = make(chan bool, workerNum)
+	for i := 0; i < workerNum; i++ {
+		global.ValidWorkChan.WorkExecute <- true
+	}
+
+	return nil
+}

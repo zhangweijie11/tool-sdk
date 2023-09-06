@@ -7,6 +7,7 @@ import (
 	"gitlab.example.com/zhangweijie/tool-sdk/middleware/logger"
 	"gitlab.example.com/zhangweijie/tool-sdk/middleware/schemas"
 	"gitlab.example.com/zhangweijie/tool-sdk/routers"
+	"gitlab.example.com/zhangweijie/tool-sdk/services"
 	"net/http"
 	_ "net/http/pprof"
 	"time"
@@ -16,6 +17,10 @@ func Start() error {
 	err := logger.Setup(global.Config.Server.Loglevel)
 	if err != nil {
 		logger.Panic("设置 Logger 异常", err)
+	}
+
+	if err = initizlize.InitWorker(global.Config.Server.Concurrency); err != nil {
+		logger.Panic("初始化任务执行者异常", err)
 	}
 
 	if global.Config.Elastic.Activate {
@@ -40,6 +45,10 @@ func Start() error {
 	//go func() {
 	//	log.Println(http.ListenAndServe("localhost:8080", nil))
 	//}()
+
+	go func() {
+		services.LoopExecutionWork()
+	}()
 
 	var engine = gin.New()
 	switch global.Config.Server.RunMode {
