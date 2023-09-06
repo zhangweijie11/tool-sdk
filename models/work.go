@@ -33,6 +33,24 @@ func CreateWok(work *Work) error {
 	return nil
 }
 
+// DeleteWorkByWorkUUID 根据总任务唯一标识删除数据
+func DeleteWorkByWorkUUID(workUUID string) error {
+	if err := global.Db.Where("uuid = ?", workUUID).Delete(&Work{}).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// DeleteWorkByWorkUUIDs 根据总任务唯一标识批量删除数据
+func DeleteWorkByWorkUUIDs(workUUIDs []string) error {
+	if err := global.Db.Model(&Work{}).Where("uuid in ?", workUUIDs).Delete(&Work{}).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // UpdateWork 创建 work 总任务
 func UpdateWork(workUUID, column, newValue string) error {
 	if err := global.Db.Model(&Work{}).Where("uuid = ?", workUUID).Update(column, newValue).Error; err != nil {
@@ -42,10 +60,10 @@ func UpdateWork(workUUID, column, newValue string) error {
 	return nil
 }
 
-// GetWorkFromUUID 根据 UUID 查询 worker 数据
-func GetWorkFromUUID(workUUID string) (Work, error) {
+// GetWorkByUUID 根据总任务唯一标识查询数据
+func GetWorkByUUID(workUUID string) (Work, error) {
 	var work Work
-	if err := global.Db.Model(&Work{}).Where("uuid = ?", workUUID).First(&work).Error; err != nil {
+	if err := global.Db.Where("uuid = ?", workUUID).First(&work).Error; err != nil {
 		return work, err
 	}
 

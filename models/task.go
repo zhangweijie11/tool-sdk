@@ -1,6 +1,9 @@
 package models
 
-import "gorm.io/datatypes"
+import (
+	"gitlab.example.com/zhangweijie/tool-sdk/global"
+	"gorm.io/datatypes"
+)
 
 type Task struct {
 	ID       uint           `gorm:"column:id;primarykey" json:"id"`
@@ -17,4 +20,30 @@ type Task struct {
 
 func (Task) TableName() string {
 	return "task"
+}
+
+// DeleteTaskByWorkUUID 根据总任务唯一标识删除数据
+func DeleteTaskByWorkUUID(workUUID string) error {
+	if err := global.Db.Where("work_uuid = ?", workUUID).Delete(&Task{}).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// DeleteTaskByTaskUUID 根据子任务唯一标识删除数据
+func DeleteTaskByTaskUUID(taskUUID string) error {
+	if err := global.Db.Where("uuid = ?", taskUUID).Delete(&Task{}).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// GetTaskByTaskUUID 根据子任务唯一标识查询数据
+func GetTaskByTaskUUID(taskUUID string) (Task, error) {
+	var task Task
+	if err := global.Db.Where("uuid = ?", taskUUID).First(&task).Error; err != nil {
+		return task, err
+	}
+
+	return task, nil
 }

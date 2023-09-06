@@ -17,6 +17,7 @@ type Cfg struct {
 	Elastic  ElasticConfig  `yaml:"elastic"`
 	Database DatabaseConfig `yaml:"database"`
 	Cache    CacheConfig    `yaml:"redis"`
+	Tool     interface{}    `yaml:"tool"`
 }
 
 type ServerConfig struct {

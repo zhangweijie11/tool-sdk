@@ -1,27 +1,15 @@
 package global
 
-import "fmt"
-
 type ParamsInterface interface {
-	CheckParamsInterface()
-	ValidWorkCreateParams(map[string]interface{}) error
-	//ValidWorkDeleteParams(map[string]interface{}) error
-	//ValidWorkUpdateParams(map[string]interface{}) error
-	//ValidWorkGetInfoParams(map[string]interface{}) error
-	//ValidWorkGetStatusParams(map[string]interface{}) error
+	ValidWorkCreateParams(map[string]interface{}) (string, error)
 }
 
-type paramsIns struct{}
+type ParamsIns struct{}
 
-func (pi *paramsIns) ValidWorkCreateParams(params map[string]interface{}) error {
-	fmt.Println("------------>本地参数", params)
-	return nil
+func NewParamsIns() *ParamsIns {
+	return &ParamsIns{}
 }
 
-func (pi *paramsIns) CheckParamsInterface() {
-	fmt.Println("------------>", "检查是否实现参数校验接口")
-}
-
-func CheckParamsInterface(obj ParamsInterface) {
-	obj.CheckParamsInterface()
+func (pi *ParamsIns) ValidWorkCreateParams(params map[string]interface{}) (string, error) {
+	return "", nil
 }

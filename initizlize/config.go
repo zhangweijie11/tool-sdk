@@ -35,6 +35,6 @@ func LoadConfig(config string) (err error) {
 	if err != nil {
 		return err
 	}
-	decryptConfig(global.Config)
+	//decryptConfig(global.Config)
 	return err
 }

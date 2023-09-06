@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-playground/validator/v10 v10.14.0
+	github.com/google/uuid v1.3.0
 	github.com/olivere/elastic/v7 v7.0.32
 	github.com/redis/go-redis/v9 v9.1.0
 	go.uber.org/zap v1.25.0

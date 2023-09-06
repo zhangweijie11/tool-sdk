@@ -8,17 +8,12 @@ import (
 )
 
 // Start 程序开始函数
-func Start(paramsInterface global.ParamsInterface) {
+func main() {
 	err := initizlize.LoadConfig("config.yaml")
 	if err != nil {
 		logger.Panic("加载配置文件出现错误", err)
 	}
-	if paramsInterface != nil {
-		global.ValidParamsIns = paramsInterface
-	} else {
-		global.ValidParamsIns = global.NewParamsIns()
-	}
-
+	global.ValidParamsIns = global.NewParamsIns()
 	err = web.Start()
 	if err != nil {
 		logger.Panic("启动服务出现错误", err)

@@ -9,7 +9,9 @@ import (
 func InitWorkRouter(engine *gin.Engine) gin.IRoutes {
 	var group = engine.Group("/works")
 	{
-		group.POST("", api.CreateWorkApi)
+		group.POST("", api.WorkCreateApi)
+		group.DELETE("", api.WorkDeleteApi)
+		group.GET("", api.WorkGetInfoApi)
 	}
 	return group
 }

@@ -20,7 +20,7 @@ var (
 	Cache         *redis.Client
 )
 
-var ParamsIns paramsIns
+var ValidParamsIns ParamsInterface
 
 // 任务相关
 const (
