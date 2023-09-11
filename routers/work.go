@@ -14,6 +14,7 @@ func InitWorkRouter(engine *gin.Engine) gin.IRoutes {
 		group.GET("", api.WorkGetInfoApi)
 		group.PATCH("/pause", api.WorkPauseApi)
 		group.PATCH("/stop", api.WorkStopApi)
+		group.PATCH("/restart", api.WorkRestartApi)
 	}
 	return group
 }

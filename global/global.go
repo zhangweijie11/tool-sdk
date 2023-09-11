@@ -1,6 +1,7 @@
 package global
 
 import (
+	"context"
 	"github.com/olivere/elastic/v7"
 	"github.com/redis/go-redis/v9"
 	"gitlab.example.com/zhangweijie/tool-sdk/config"
@@ -13,12 +14,13 @@ const (
 	TimeFormatDay             = "2006-01-02"          // 固定format时间，2006-12345
 	TimeFormatSecond          = "2006-01-02 15:04:05" // 固定format时间，2006-12345
 	WorkStatusPending         = "pending"
+	WorkStatusDoingGo         = "doingGo"
 	WorkStatusDoing           = "doing"
 	WorkStatusDone            = "done"
 	WorkStatusFailed          = "failed"
 	WorkStatusPause           = "pause"
 	WorkStatusStop            = "stop"
-	WorkStatusCancelled       = "cancelled"
+	WorkStatusRestart         = "restart"
 	CallbackWorkStatusSuccess = "success"
 	CallbackWorkStatusFailed  = "failed"
 	CallbackTypeApi           = "API"
@@ -34,11 +36,30 @@ var (
 )
 
 var (
-	ValidExecutorIns ExecutorInterface
-	ValidWorkChan    WorkChan
+	ValidExecutorIns  ExecutorInterface
+	ValidExecutorChan ExecutorChan
+	ValidDoingWork    DoingWork
 )
 
-type WorkChan struct {
+type Work struct {
+	WorkID     uint
+	WorkUUID   string
+	WorkStatus string
+	Context    context.Context
+	Cancel     context.CancelFunc
+}
+
+type DoingWork struct {
+	sync.Mutex
+	DoingWorkMap map[string]*Work
+}
+
+type ExecutorChan struct {
 	sync.Mutex
 	WorkExecute chan bool
+}
+
+func init() {
+	doingWorkMap := make(map[string]*Work)
+	ValidDoingWork = DoingWork{DoingWorkMap: doingWorkMap}
 }

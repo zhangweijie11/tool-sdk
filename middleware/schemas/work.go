@@ -27,3 +27,8 @@ type WorkPauseSchema struct {
 type WorkStopSchema struct {
 	WorkUUID string `json:"work_uuid" binding:"required"` // 唯一标识
 }
+
+// WorkRestartSchema 重启总任务参数
+type WorkRestartSchema struct {
+	WorkUUID string `json:"work_uuid" binding:"required"` // 唯一标识
+}

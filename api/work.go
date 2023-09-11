@@ -11,6 +11,7 @@ import (
 	"gitlab.example.com/zhangweijie/tool-sdk/middleware/logger"
 	"gitlab.example.com/zhangweijie/tool-sdk/middleware/schemas"
 	"gitlab.example.com/zhangweijie/tool-sdk/models"
+	"gitlab.example.com/zhangweijie/tool-sdk/services"
 	"gorm.io/gorm"
 )
 
@@ -94,6 +95,7 @@ func WorkPauseApi(c *gin.Context) {
 		if err != nil {
 			schemas.Fail(c, schemas.RecordUpdateErr)
 		} else {
+			services.PauseWork(schema.WorkUUID)
 			schemas.SuccessUpdate(c, nil)
 		}
 	}
@@ -104,6 +106,20 @@ func WorkStopApi(c *gin.Context) {
 	var schema = new(schemas.WorkGetInfoSchema)
 	if err := schemas.BindSchema(c, schema, binding.JSON); err == nil {
 		err = controller.UpdateWorkByWorkUUID(schema.WorkUUID, "status", global.WorkStatusStop)
+		if err != nil {
+			schemas.Fail(c, schemas.RecordUpdateErr)
+		} else {
+			services.PauseWork(schema.WorkUUID)
+			schemas.SuccessUpdate(c, nil)
+		}
+	}
+}
+
+// WorkRestartApi 重启总任务
+func WorkRestartApi(c *gin.Context) {
+	var schema = new(schemas.WorkRestartSchema)
+	if err := schemas.BindSchema(c, schema, binding.JSON); err == nil {
+		err = controller.UpdateWorkByWorkUUID(schema.WorkUUID, "status", global.WorkStatusRestart)
 		if err != nil {
 			schemas.Fail(c, schemas.RecordUpdateErr)
 		} else {

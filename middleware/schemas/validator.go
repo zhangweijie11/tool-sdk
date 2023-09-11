@@ -25,6 +25,7 @@ var registerValidatorRule = map[string]map[string]string{
 	"WorkGetInfoSchema": taskValidatorErrorMessage,
 	"WorkPauseSchema":   taskValidatorErrorMessage,
 	"WorkStopSchema":    taskValidatorErrorMessage,
+	"WorkRestartSchema": taskValidatorErrorMessage,
 }
 
 var (
@@ -37,6 +38,7 @@ var (
 	GetWorkErr            = "查询任务错误"
 	UpdateWorkErr         = "更新任务错误"
 	ExecuteWorkErr        = "执行任务错误"
+	CancelWorkErr         = "停止任务"
 	CallbackWorkErr       = "回调任务错误"
 	UnSupportOperationErr = "不支持的操作"
 	InternalErr           = "内部错误"

@@ -40,9 +40,9 @@ func LoadConfig(config string) (err error) {
 }
 
 func InitWorker(workerNum int) (err error) {
-	global.ValidWorkChan.WorkExecute = make(chan bool, workerNum)
+	global.ValidExecutorChan.WorkExecute = make(chan bool, workerNum)
 	for i := 0; i < workerNum; i++ {
-		global.ValidWorkChan.WorkExecute <- true
+		global.ValidExecutorChan.WorkExecute <- true
 	}
 
 	return nil
