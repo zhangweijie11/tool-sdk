@@ -42,11 +42,10 @@ var (
 )
 
 type Work struct {
-	WorkID     uint
-	WorkUUID   string
-	WorkStatus string
-	Context    context.Context
-	Cancel     context.CancelFunc
+	WorkID   uint
+	WorkUUID string
+	Context  context.Context
+	Cancel   context.CancelFunc
 }
 
 type DoingWork struct {

@@ -82,3 +82,12 @@ func GetWorkOrderCreateTime() (Work, error) {
 
 	return work, nil
 }
+
+// UpdateWorkDoingToPending 将状态为 doing 的任务变更为 pending
+func UpdateWorkDoingToPending() error {
+	if err := global.Db.Model(&Work{}).Where("status = ?", global.WorkStatusDoing).Update("status", global.WorkStatusPending).Error; err != nil {
+		return err
+	}
+
+	return nil
+}

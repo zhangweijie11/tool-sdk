@@ -6,6 +6,7 @@ import (
 	"gitlab.example.com/zhangweijie/tool-sdk/initizlize"
 	"gitlab.example.com/zhangweijie/tool-sdk/middleware/logger"
 	"gitlab.example.com/zhangweijie/tool-sdk/middleware/schemas"
+	"gitlab.example.com/zhangweijie/tool-sdk/models"
 	"gitlab.example.com/zhangweijie/tool-sdk/routers"
 	"gitlab.example.com/zhangweijie/tool-sdk/services"
 	"net/http"
@@ -39,6 +40,10 @@ func Start() error {
 		if err = initizlize.InitCache(&global.Config.Cache); err != nil {
 			logger.Panic("缓存连接异常", err)
 		}
+	}
+
+	if err = models.UpdateWorkDoingToPending(); err != nil {
+		logger.Panic("任务状态变更错误", err)
 	}
 
 	// 开启 pprof 性能分析

@@ -3,6 +3,7 @@ package global
 import (
 	"context"
 	"errors"
+	"fmt"
 	"gitlab.example.com/zhangweijie/tool-sdk/middleware/schemas"
 	"time"
 )
@@ -19,7 +20,8 @@ func NewExecutorIns() *ExecutorIns {
 }
 
 func (ei *ExecutorIns) ExecutorMainFunc(ctx context.Context, params interface{}) error {
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 20; i++ {
+		fmt.Println("------------>任务", params, i)
 		time.Sleep(1 * time.Second)
 		// 检查任务是否被取消
 		select {
