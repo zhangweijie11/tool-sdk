@@ -39,6 +39,7 @@ var (
 	ValidExecutorIns  ExecutorInterface
 	ValidExecutorChan ExecutorChan
 	ValidDoingWork    DoingWork
+	ValidModels       []interface{}
 )
 
 type Work struct {

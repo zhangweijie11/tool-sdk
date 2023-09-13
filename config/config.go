@@ -57,7 +57,8 @@ type DatabaseConfig struct {
 	MaxOpenConns         int             `yaml:"max_open_conns"`
 	LogLevel             logger.LogLevel `yaml:"log_level"`
 	SlowThreshold        int             `yaml:"slow_threshold"`
-	Activate             bool            `yaml:"activate"` // 是否激活
+	// TODO:参数暂时弃用，强依赖数据库
+	Activate bool `yaml:"activate"` // 是否激活
 }
 
 type CacheConfig struct {

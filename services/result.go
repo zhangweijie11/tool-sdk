@@ -12,25 +12,22 @@ import (
 	"sync"
 )
 
-type Progress struct {
+type Result struct {
 	sync.Mutex
 	WorkUUID     string
-	Progress     float32
-	ProgressType string
-	ProgressUrl  string
+	Result       map[string]interface{}
+	CallbackType string
+	CallbackUrl  string
 }
 
-// PushProgress 发送任务进度
-func (p *Progress) PushProgress() error {
-	p.Lock()
-	defer p.Unlock()
+// PushResult 发送任务结果
+func (cr *Result) PushResult() error {
+	cr.Lock()
+	defer cr.Unlock()
 
-	if p.Progress > 95 && p.Progress != 100 {
-		p.Progress = 95
-	}
-	switch p.ProgressType {
+	switch cr.CallbackType {
 	case global.CallbackTypeApi:
-		err := p.callbackAPI()
+		err := cr.callbackAPI()
 		return err
 	case global.CallbackTypeMQ:
 		fmt.Println("------------>", global.CallbackTypeMQ)
@@ -43,14 +40,14 @@ func (p *Progress) PushProgress() error {
 	}
 }
 
-func (p *Progress) callbackAPI() error {
-	validUrl := strings.TrimRight(p.ProgressUrl, "/") + "/progress"
-	var progressParams = map[string]interface{}{
-		"workUUID": p.WorkUUID,
-		"progress": p.Progress,
+func (cr *Result) callbackAPI() error {
+	validUrl := strings.TrimRight(cr.CallbackUrl, "/") + "/callback/result"
+	var callbackResultParams = map[string]interface{}{
+		"workUUID": cr.CallbackType,
+		"result":   cr.Result,
 	}
 	// 将JSON对象编码为JSON字符串
-	jsonData, err := json.Marshal(progressParams)
+	jsonData, err := json.Marshal(callbackResultParams)
 	if err != nil {
 		return err
 	}

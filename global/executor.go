@@ -10,7 +10,7 @@ import (
 
 type ExecutorInterface interface {
 	ValidWorkCreateParams(map[string]interface{}) (string, error)
-	ExecutorMainFunc(context.Context, interface{}) error
+	ExecutorMainFunc(context.Context, map[string]interface{}) error
 }
 
 type ExecutorIns struct{}
@@ -19,7 +19,7 @@ func NewExecutorIns() *ExecutorIns {
 	return &ExecutorIns{}
 }
 
-func (ei *ExecutorIns) ExecutorMainFunc(ctx context.Context, params interface{}) error {
+func (ei *ExecutorIns) ExecutorMainFunc(ctx context.Context, params map[string]interface{}) error {
 	for i := 0; i < 20; i++ {
 		fmt.Println("------------>任务", params, i)
 		time.Sleep(1 * time.Second)

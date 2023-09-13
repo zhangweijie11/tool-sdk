@@ -46,8 +46,10 @@ func executeWork(work *global.Work) {
 			return
 		}
 
+		params := make(map[string]interface{})
+		params["workUUID"] = work.WorkUUID
 		// 开始执行任务
-		err = global.ValidExecutorIns.ExecutorMainFunc(work.Context, work.WorkUUID)
+		err = global.ValidExecutorIns.ExecutorMainFunc(work.Context, params)
 		if err != nil {
 			logger.Error(schemas.ExecuteWorkErr, err)
 			return

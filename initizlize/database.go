@@ -6,7 +6,6 @@ import (
 	"gitlab.example.com/zhangweijie/tool-sdk/global"
 	"gitlab.example.com/zhangweijie/tool-sdk/middleware/logger"
 	"gitlab.example.com/zhangweijie/tool-sdk/middleware/schemas"
-	"gitlab.example.com/zhangweijie/tool-sdk/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"time"
@@ -38,7 +37,7 @@ func InitDatabase(cfg *config.DatabaseConfig) (err error) {
 		return
 	}
 
-	AutoMigrate([]interface{}{&models.Work{}, &models.Task{}, &models.Result{}})
+	AutoMigrate(global.ValidModels)
 
 	db, _ := global.Db.DB()
 	//设置数据库最大空闲连接数

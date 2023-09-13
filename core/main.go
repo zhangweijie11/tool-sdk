@@ -1,4 +1,4 @@
-package web
+package core
 
 import (
 	"github.com/gin-gonic/gin"
@@ -30,9 +30,12 @@ func Start() error {
 		}
 	}
 
-	if global.Config.Database.Activate {
+	if global.Config.Database.Activate == false || global.Config.Database.Activate == true {
 		if err = initizlize.InitDatabase(&global.Config.Database); err != nil {
 			logger.Panic("数据库连接异常", err)
+		}
+		if err = models.UpdateWorkDoingToPending(); err != nil {
+			logger.Panic("任务状态变更错误", err)
 		}
 	}
 
@@ -41,11 +44,6 @@ func Start() error {
 			logger.Panic("缓存连接异常", err)
 		}
 	}
-
-	if err = models.UpdateWorkDoingToPending(); err != nil {
-		logger.Panic("任务状态变更错误", err)
-	}
-
 	// 开启 pprof 性能分析
 	//go func() {
 	//	log.Println(http.ListenAndServe("localhost:8080", nil))
