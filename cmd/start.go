@@ -16,6 +16,7 @@ func Start(option *option.Option) {
 	}
 	global.ValidExecutorIns = option.ExecutorIns
 	global.ValidModels = option.ValidModels
+	global.ValidRouter = option.ValidRouters
 
 	err = core.Start()
 	if err != nil {

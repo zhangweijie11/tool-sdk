@@ -22,6 +22,15 @@ func (Task) TableName() string {
 	return "task"
 }
 
+// CreateTask 创建 task 子任务
+func CreateTask(task *Task) error {
+	if err := global.Db.Create(task).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // DeleteTaskByWorkUUID 根据总任务唯一标识删除数据
 func DeleteTaskByWorkUUID(workUUID string) error {
 	if err := global.Db.Where("work_uuid = ?", workUUID).Delete(&Task{}).Error; err != nil {

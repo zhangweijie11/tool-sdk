@@ -19,9 +19,9 @@ import (
 func WorkCreateApi(c *gin.Context) {
 	var schema = new(schemas.WorkCreateSchema)
 	if err := schemas.BindSchema(c, schema, binding.JSON); err == nil {
-		msg, err := global.ValidExecutorIns.ValidWorkCreateParams(schema.Params)
+		err = global.ValidExecutorIns.ValidWorkCreateParams(schema.Params)
 		if err != nil {
-			schemas.Fail(c, msg)
+			schemas.Fail(c, err.Error())
 		} else {
 			if global.Config.Database.Activate {
 				jsonBytes, err := json.Marshal(schema.Params)
@@ -58,6 +58,8 @@ func WorkCreateApi(c *gin.Context) {
 				schemas.SuccessCreate(c, nil)
 			}
 		}
+	} else {
+		schemas.Fail(c, err.Error())
 	}
 }
 
@@ -71,6 +73,8 @@ func WorkDeleteApi(c *gin.Context) {
 		} else {
 			schemas.SuccessDelete(c, schemas.CurdStatusOkMsg)
 		}
+	} else {
+		schemas.Fail(c, err.Error())
 	}
 }
 
@@ -84,6 +88,8 @@ func WorkGetInfoApi(c *gin.Context) {
 		} else {
 			schemas.SuccessGet(c, work)
 		}
+	} else {
+		schemas.Fail(c, err.Error())
 	}
 }
 
@@ -98,6 +104,8 @@ func WorkPauseApi(c *gin.Context) {
 			services.PauseWork(schema.WorkUUID)
 			schemas.SuccessUpdate(c, nil)
 		}
+	} else {
+		schemas.Fail(c, err.Error())
 	}
 }
 
@@ -112,6 +120,8 @@ func WorkStopApi(c *gin.Context) {
 			services.PauseWork(schema.WorkUUID)
 			schemas.SuccessUpdate(c, nil)
 		}
+	} else {
+		schemas.Fail(c, err.Error())
 	}
 }
 
@@ -125,5 +135,7 @@ func WorkRestartApi(c *gin.Context) {
 		} else {
 			schemas.SuccessUpdate(c, nil)
 		}
+	} else {
+		schemas.Fail(c, err.Error())
 	}
 }

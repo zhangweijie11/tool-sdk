@@ -7,7 +7,6 @@ import (
 	"gitlab.example.com/zhangweijie/tool-sdk/middleware/logger"
 	"gitlab.example.com/zhangweijie/tool-sdk/middleware/schemas"
 	"gitlab.example.com/zhangweijie/tool-sdk/models"
-	"gitlab.example.com/zhangweijie/tool-sdk/routers"
 	"gitlab.example.com/zhangweijie/tool-sdk/services"
 	"net/http"
 	_ "net/http/pprof"
@@ -66,8 +65,9 @@ func Start() error {
 	engine.Use(logger.GinRecovery(true))
 
 	// 初始化路由
-	routers.InitPingRouter(engine)
-	routers.InitWorkRouter(engine)
+	for _, f := range global.ValidRouter {
+		f(engine)
+	}
 	server := &http.Server{
 		Addr:           ":" + global.Config.Server.RunPort,                             // 监听地址
 		MaxHeaderBytes: 1 << 20,                                                        // 1048576

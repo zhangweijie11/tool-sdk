@@ -2,6 +2,7 @@ package global
 
 import (
 	"context"
+	"github.com/gin-gonic/gin"
 	"github.com/olivere/elastic/v7"
 	"github.com/redis/go-redis/v9"
 	"gitlab.example.com/zhangweijie/tool-sdk/config"
@@ -40,6 +41,7 @@ var (
 	ValidExecutorChan ExecutorChan
 	ValidDoingWork    DoingWork
 	ValidModels       []interface{}
+	ValidRouter       []func(*gin.Engine) gin.IRoutes
 )
 
 type Work struct {

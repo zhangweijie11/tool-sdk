@@ -52,6 +52,11 @@ func executeWork(work *global.Work) {
 		err = global.ValidExecutorIns.ExecutorMainFunc(work.Context, params)
 		if err != nil {
 			logger.Error(schemas.ExecuteWorkErr, err)
+			// 更新任务状态为失败
+			err = models.UpdateWork(work.WorkUUID, "status", global.WorkStatusFailed)
+			if err != nil {
+				logger.Error(schemas.UpdateWorkErr, err)
+			}
 			return
 		}
 		// 更新任务状态为已完成

@@ -3,13 +3,12 @@ package global
 import (
 	"context"
 	"errors"
-	"fmt"
 	"gitlab.example.com/zhangweijie/tool-sdk/middleware/schemas"
 	"time"
 )
 
 type ExecutorInterface interface {
-	ValidWorkCreateParams(map[string]interface{}) (string, error)
+	ValidWorkCreateParams(map[string]interface{}) error
 	ExecutorMainFunc(context.Context, map[string]interface{}) error
 }
 
@@ -20,20 +19,18 @@ func NewExecutorIns() *ExecutorIns {
 }
 
 func (ei *ExecutorIns) ExecutorMainFunc(ctx context.Context, params map[string]interface{}) error {
-	for i := 0; i < 20; i++ {
-		fmt.Println("------------>任务", params, i)
-		time.Sleep(1 * time.Second)
+	for i := 0; i < 10; i++ {
 		// 检查任务是否被取消
 		select {
 		case <-ctx.Done():
 			return errors.New(schemas.CancelWorkErr)
 		default:
-
+			time.Sleep(1 * time.Second)
 		}
 	}
 	return nil
 }
 
-func (ei *ExecutorIns) ValidWorkCreateParams(params map[string]interface{}) (string, error) {
-	return "", nil
+func (ei *ExecutorIns) ValidWorkCreateParams(map[string]interface{}) error {
+	return nil
 }
