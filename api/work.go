@@ -28,7 +28,6 @@ func WorkCreateApi(c *gin.Context) {
 				if err != nil {
 					logger.Error(schemas.JsonParseErr, err)
 					schemas.Fail(c, schemas.JsonParseErr)
-					return
 				}
 
 				if schema.WorkUUID == "" {
