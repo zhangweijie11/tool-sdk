@@ -123,7 +123,17 @@ func LoopProgressResult() {
 		// 推送结果
 		case validResult := <-global.ValidResultChan:
 			err := result.PushResult(validResult)
-			logger.Warn(fmt.Sprintf("任务 %s 结果推送失败，错误为 %s !", validResult.WorkUUID, err))
+			if err != nil {
+				logger.Warn(fmt.Sprintf("任务 %s 结果推送失败，错误为 %s !", validResult.WorkUUID, err))
+			} else {
+				// 修改任务推送状态为已完成
+				err = models.UpdateWork(validResult.WorkUUID, "callback_status", global.WorkStatusDone)
+				if err != nil {
+					// 修改任务推送状态为已失败
+					err = models.UpdateWork(validResult.WorkUUID, "callback_status", global.WorkStatusFailed)
+					logger.Warn(fmt.Sprintf("任务 %s 结果推送失败，错误为 %s !", validResult.WorkUUID, err))
+				}
+			}
 		}
 	}
 }

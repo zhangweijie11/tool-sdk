@@ -35,17 +35,18 @@ func WorkCreateApi(c *gin.Context) {
 				}
 
 				work := &models.Work{
-					UUID:         schema.WorkUUID,
-					Params:       jsonBytes,
-					Status:       global.WorkStatusPending,
-					Source:       schema.Source,
-					Priority:     schema.Priority,
-					Retry:        3,
-					CallbackUrl:  schema.CallbackUrl,
-					CallbackType: schema.CallbackType,
-					WorkType:     global.Config.Server.ServerName,
-					ProgressType: schema.ProgressType,
-					ProgressUrl:  schema.ProgressUrl,
+					UUID:           schema.WorkUUID,
+					Params:         jsonBytes,
+					Status:         global.WorkStatusPending,
+					Source:         schema.Source,
+					Priority:       schema.Priority,
+					Retry:          3,
+					CallbackUrl:    schema.CallbackUrl,
+					CallbackType:   schema.CallbackType,
+					CallbackStatus: global.WorkStatusPending,
+					WorkType:       global.Config.Server.ServerName,
+					ProgressType:   schema.ProgressType,
+					ProgressUrl:    schema.ProgressUrl,
 				}
 
 				err = models.CreateWok(work)
