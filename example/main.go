@@ -6,7 +6,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	tool "gitlab.example.com/zhangweijie/tool-sdk/cmd"
-	"gitlab.example.com/zhangweijie/tool-sdk/example/middlerware/schemas"
+	"gitlab.example.com/zhangweijie/tool-sdk/example/middleware/schemas"
 	"gitlab.example.com/zhangweijie/tool-sdk/example/models"
 	"gitlab.example.com/zhangweijie/tool-sdk/example/routers"
 	"gitlab.example.com/zhangweijie/tool-sdk/example/services/fingerprint"
@@ -33,27 +33,26 @@ func (ei *executorIns) ValidWorkCreateParams(params map[string]interface{}) (err
 }
 
 // ExecutorMainFunc 任务执行主函数（可自由发挥）
+// params = map[string]interface{}{
+// "work": &toolmodels.Work
+// }
 func (ei *executorIns) ExecutorMainFunc(ctx context.Context, params map[string]interface{}) error {
 	errChan := make(chan error)
 	go func() {
-		work, err := toolModels.GetWorkByUUID(params["workUUID"].(string))
+		work := params["work"].(*toolModels.Work)
+		var validParams fingerprint.FingerprintParams
+		err := json.Unmarshal(work.Params, &validParams)
 		if err != nil {
-			logger.Error(toolSchemas.GetWorkErr, err)
+			logger.Error(toolSchemas.JsonParseErr, err)
 			errChan <- err
 		} else {
-			var validParams fingerprint.FingerprintParams
-			err = json.Unmarshal(work.Params, &validParams)
-			if err != nil {
-				logger.Error(toolSchemas.JsonParseErr, err)
-				errChan <- err
+			if len(validParams.Urls) < 1 {
+				errChan <- errors.New(toolSchemas.WorkTargetErr)
 			} else {
-				if len(validParams.Urls) < 1 {
-					errChan <- errors.New(toolSchemas.WorkTargetErr)
-				} else {
-					err = fingerprint.FingerprintMainWorker(ctx, &work, &validParams)
-					errChan <- err
-				}
+				err = fingerprint.FingerprintMainWorker(ctx, work, &validParams)
+				errChan <- err
 			}
+
 		}
 	}()
 	select {

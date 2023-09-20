@@ -50,6 +50,7 @@ func Start() error {
 
 	go func() {
 		services.LoopExecuteWork()
+		services.LoopProgressResult()
 	}()
 
 	var engine = gin.New()

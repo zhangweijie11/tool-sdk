@@ -1,33 +1,48 @@
-package services
+package result
 
 import (
 	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/google/uuid"
 	"gitlab.example.com/zhangweijie/tool-sdk/global"
 	"gitlab.example.com/zhangweijie/tool-sdk/middleware/schemas"
+	"gitlab.example.com/zhangweijie/tool-sdk/models"
 	"net/http"
+	"strconv"
 	"strings"
-	"sync"
 )
 
-type Result struct {
-	sync.Mutex
-	WorkUUID     string
-	Result       map[string]interface{}
-	CallbackType string
-	CallbackUrl  string
-}
-
 // PushResult 发送任务结果
-func (cr *Result) PushResult() error {
-	cr.Lock()
-	defer cr.Unlock()
+func PushResult(result *global.Result) error {
+	jsonBytes, err := json.Marshal(result.Result)
+	if err != nil {
+		return err
+	}
 
-	switch cr.CallbackType {
+	validResult := &models.Result{
+		UUID:     uuid.New().String(),
+		WorkUUID: result.WorkUUID,
+		TaskUUID: result.TaskUUID,
+		Extra:    jsonBytes,
+	}
+
+	// 存储任务结果
+	err = models.CreateResult(validResult)
+	if err != nil {
+		return err
+	}
+
+	// 修改任务进度
+	err = models.UpdateWork(result.WorkUUID, "progress", strconv.FormatFloat(float64(100), 'f', 2, 64))
+	if err != nil {
+		return err
+	}
+
+	switch result.CallbackType {
 	case global.CallbackTypeApi:
-		err := cr.callbackAPI()
+		err = callbackAPI(result)
 		return err
 	case global.CallbackTypeMQ:
 		fmt.Println("------------>", global.CallbackTypeMQ)
@@ -40,11 +55,11 @@ func (cr *Result) PushResult() error {
 	}
 }
 
-func (cr *Result) callbackAPI() error {
-	validUrl := strings.TrimRight(cr.CallbackUrl, "/") + "/callback/result"
+func callbackAPI(result *global.Result) error {
+	validUrl := strings.TrimRight(result.CallbackUrl, "/") + "/callback/result"
 	var callbackResultParams = map[string]interface{}{
-		"workUUID": cr.CallbackType,
-		"result":   cr.Result,
+		"workUUID": result.CallbackType,
+		"result":   result.Result,
 	}
 	// 将JSON对象编码为JSON字符串
 	jsonData, err := json.Marshal(callbackResultParams)

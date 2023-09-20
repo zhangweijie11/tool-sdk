@@ -7,7 +7,6 @@ import (
 	"gitlab.example.com/zhangweijie/tool-sdk/global"
 	"gitlab.example.com/zhangweijie/tool-sdk/middleware/schemas"
 	toolModels "gitlab.example.com/zhangweijie/tool-sdk/models"
-	toolServices "gitlab.example.com/zhangweijie/tool-sdk/services"
 	"sync"
 	"time"
 )
@@ -67,9 +66,7 @@ func FingerprintMainWorker(ctx context.Context, work *toolModels.Work, validPara
 	quit := make(chan struct{})
 	go func() {
 		defer close(quit)
-		pushProgress := &toolServices.Progress{WorkUUID: work.UUID, ProgressType: work.ProgressType, ProgressUrl: work.ProgressUrl, Progress: 0}
-		pushResult := &toolServices.Result{WorkUUID: work.UUID, CallbackType: work.CallbackType, CallbackUrl: work.CallbackUrl}
-		onePercent := float32(100 / len(validParams.Urls))
+		onePercent := float64(100 / len(validParams.Urls))
 		taskChan := make(chan Task, len(validParams.Urls))
 		resultChan := make(chan []string, len(validParams.Urls))
 		var wg sync.WaitGroup
@@ -99,14 +96,18 @@ func FingerprintMainWorker(ctx context.Context, work *toolModels.Work, validPara
 
 		for fingerprintResult := range resultChan {
 			if work.ProgressType != "" && work.ProgressUrl != "" {
+				pushProgress := &global.Progress{WorkUUID: work.UUID, ProgressType: work.ProgressType, ProgressUrl: work.ProgressUrl, Progress: 0}
 				pushProgress.Progress += onePercent
-				pushProgress.PushProgress()
+				// 回传进度
+				global.ValidProgressChan <- pushProgress
 			}
 			fmt.Println("------------>", fingerprintResult)
 		}
 
 		if work.CallbackType != "" && work.CallbackUrl != "" {
-			pushResult.PushResult()
+			pushResult := &global.Result{WorkUUID: work.UUID, CallbackType: work.CallbackType, CallbackUrl: work.CallbackUrl}
+			// 回传结果
+			global.ValidResultChan <- pushResult
 		}
 
 	}()

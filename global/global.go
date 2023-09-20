@@ -6,6 +6,7 @@ import (
 	"github.com/olivere/elastic/v7"
 	"github.com/redis/go-redis/v9"
 	"gitlab.example.com/zhangweijie/tool-sdk/config"
+	"gitlab.example.com/zhangweijie/tool-sdk/models"
 	"gorm.io/gorm"
 	"sync"
 )
@@ -42,13 +43,29 @@ var (
 	ValidDoingWork    DoingWork
 	ValidModels       []interface{}
 	ValidRouter       []func(*gin.Engine) gin.IRoutes
+	ValidProgressChan chan *Progress
+	ValidResultChan   chan *Result
 )
 
 type Work struct {
-	WorkID   uint
-	WorkUUID string
-	Context  context.Context
-	Cancel   context.CancelFunc
+	Work    models.Work
+	Context context.Context
+	Cancel  context.CancelFunc
+}
+
+type Progress struct {
+	WorkUUID     string
+	Progress     float64
+	ProgressType string
+	ProgressUrl  string
+}
+
+type Result struct {
+	WorkUUID     string
+	TaskUUID     string
+	Result       map[string]interface{}
+	CallbackType string
+	CallbackUrl  string
 }
 
 type DoingWork struct {
@@ -64,4 +81,6 @@ type ExecutorChan struct {
 func init() {
 	doingWorkMap := make(map[string]*Work)
 	ValidDoingWork = DoingWork{DoingWorkMap: doingWorkMap}
+	ValidProgressChan = make(chan *Progress, 1000)
+	ValidResultChan = make(chan *Result, 1000)
 }
