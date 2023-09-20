@@ -6,7 +6,6 @@ import (
 	"github.com/olivere/elastic/v7"
 	"github.com/redis/go-redis/v9"
 	"gitlab.example.com/zhangweijie/tool-sdk/config"
-	"gitlab.example.com/zhangweijie/tool-sdk/models"
 	"gorm.io/gorm"
 	"sync"
 )
@@ -48,9 +47,9 @@ var (
 )
 
 type Work struct {
-	Work    models.Work
-	Context context.Context
-	Cancel  context.CancelFunc
+	WorkUUID string
+	Context  context.Context
+	Cancel   context.CancelFunc
 }
 
 type Progress struct {

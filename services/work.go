@@ -43,27 +43,38 @@ func executeWork(work *global.Work) {
 			global.ValidExecutorChan.WorkExecute <- true
 		}()
 		// 更新任务状态为进行中
-		err := models.UpdateWork(work.Work.UUID, "status", global.WorkStatusDoing)
+		err := models.UpdateWork(work.WorkUUID, "status", global.WorkStatusDoing)
 		if err != nil {
 			logger.Error(schemas.UpdateWorkErr, err)
 			return
 		}
 
 		params := make(map[string]interface{})
-		params["work"] = &work.Work
+		validWork, err := models.GetWorkByUUID(work.WorkUUID)
+		if err != nil {
+			logger.Error(err.Error(), err)
+			// 更新任务状态为进行中
+			err = models.UpdateWork(work.WorkUUID, "status", global.WorkStatusPending)
+			if err != nil {
+				logger.Error(schemas.UpdateWorkErr, err)
+				return
+			}
+			return
+		}
+		params["work"] = &validWork
 		// 开始执行任务
 		err = global.ValidExecutorIns.ExecutorMainFunc(work.Context, params)
 		if err != nil {
 			logger.Error(schemas.ExecuteWorkErr, err)
 			// 更新任务状态为失败
-			err = models.UpdateWork(work.Work.UUID, "status", global.WorkStatusFailed)
+			err = models.UpdateWork(work.WorkUUID, "status", global.WorkStatusFailed)
 			if err != nil {
 				logger.Error(schemas.UpdateWorkErr, err)
 			}
 			return
 		}
 		// 更新任务状态为已完成
-		err = models.UpdateWork(work.Work.UUID, "status", global.WorkStatusDone)
+		err = models.UpdateWork(work.WorkUUID, "status", global.WorkStatusDone)
 		if err != nil {
 			logger.Error(schemas.UpdateWorkErr, err)
 			return
@@ -89,7 +100,7 @@ func LoopExecuteWork() {
 			if err == nil && oldSchema != nil {
 				global.ValidDoingWork.Lock()
 				ctx, cancel := context.WithCancel(context.Background())
-				work := &global.Work{Work: oldSchema.(models.Work), Context: ctx, Cancel: cancel}
+				work := &global.Work{WorkUUID: oldSchema.(models.Work).UUID, Context: ctx, Cancel: cancel}
 				global.ValidDoingWork.DoingWorkMap[oldSchema.(models.Work).UUID] = work
 				global.ValidDoingWork.Unlock()
 				go executeWork(work)
