@@ -21,6 +21,7 @@ type Cfg struct {
 }
 
 type ServerConfig struct {
+	ServerName   string `yaml:"server_name"`
 	RunMode      string `yaml:"run_mode"`
 	RunPort      string `yaml:"run_port"`
 	Loglevel     string `yaml:"log_level"`

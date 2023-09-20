@@ -1,4 +1,5 @@
 server:
+  server_name: tool
   run_mode: debug  # debug or release
   run_port: 5000
   read_timeout: 60
