@@ -48,10 +48,8 @@ func Start() error {
 	//	log.Println(http.ListenAndServe("localhost:8080", nil))
 	//}()
 
-	go func() {
-		services.LoopExecuteWork()
-		services.LoopProgressResult()
-	}()
+	go services.LoopExecuteWork()
+	go services.LoopProgressResult()
 
 	var engine = gin.New()
 	switch global.Config.Server.RunMode {

@@ -94,6 +94,7 @@ func FingerprintMainWorker(ctx context.Context, work *toolModels.Work, validPara
 			close(resultChan)
 		}()
 
+		var finalResult [][]string
 		for fingerprintResult := range resultChan {
 			if work.ProgressType != "" && work.ProgressUrl != "" {
 				pushProgress := &global.Progress{WorkUUID: work.UUID, ProgressType: work.ProgressType, ProgressUrl: work.ProgressUrl, Progress: 0}
@@ -105,7 +106,7 @@ func FingerprintMainWorker(ctx context.Context, work *toolModels.Work, validPara
 		}
 
 		if work.CallbackType != "" && work.CallbackUrl != "" {
-			pushResult := &global.Result{WorkUUID: work.UUID, CallbackType: work.CallbackType, CallbackUrl: work.CallbackUrl}
+			pushResult := &global.Result{WorkUUID: work.UUID, CallbackType: work.CallbackType, CallbackUrl: work.CallbackUrl, Result: map[string]interface{}{"result": finalResult}}
 			// 回传结果
 			global.ValidResultChan <- pushResult
 		}

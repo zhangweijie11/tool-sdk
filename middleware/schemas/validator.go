@@ -19,7 +19,7 @@ var taskValidatorErrorMessage = map[string]string{
 	"Prioritymax":      "无效的任务优先级（0-9）",
 	"Prioritymin":      "无效的任务优先级（0-9）",
 	"Priorityrequired": "缺少任务基础参数",
-	"ParamsrequiredF":  "缺少任务基础参数",
+	"Paramsrequired":   "缺少任务基础参数",
 }
 
 // registerValidatorRule 注册参数验证错误消息, Key = e.StructNamespace(), value.key = e.Field()+e.Tag()
