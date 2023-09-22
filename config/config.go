@@ -34,6 +34,7 @@ type ServerConfig struct {
 	RootDir      string `yaml:"root_dir"`
 	SecretKey    string `yaml:"secret_key"`
 	Mode         string `yaml:"mode"`
+	RPCAddress   string `yaml:"rpc_address"`
 }
 
 type ElasticConfig struct {

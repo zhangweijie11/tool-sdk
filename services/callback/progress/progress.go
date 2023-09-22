@@ -2,7 +2,6 @@ package progress
 
 import (
 	"errors"
-	"fmt"
 	"gitlab.example.com/zhangweijie/tool-sdk/global"
 	"gitlab.example.com/zhangweijie/tool-sdk/middleware/schemas"
 	"gitlab.example.com/zhangweijie/tool-sdk/models"
@@ -26,10 +25,10 @@ func PushProgress(progress *global.Progress) (err error) {
 			return err
 		case strings.ToLower(global.CallbackTypeMQ):
 			err = util.CallbackMQ(progress)
-			return nil
+			return err
 		case strings.ToLower(global.CallbackTypegRPC):
-			fmt.Println("------------>", global.CallbackTypegRPC)
-			return nil
+			err = util.CallbackgRPC(progress)
+			return err
 		default:
 			return errors.New(schemas.WorkCallbackTypeErr)
 		}

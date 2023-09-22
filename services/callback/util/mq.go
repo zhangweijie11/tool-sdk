@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// CallbackMQ MQ 方式回调
+// CallbackMQ 通过 MQ 方式回调
 func CallbackMQ(validParams interface{}) error {
 	var (
 		params       []string

@@ -10,6 +10,7 @@ import (
 	"strings"
 )
 
+// CallbackAPI 通过 API形式回调
 func CallbackAPI(validParams interface{}) error {
 	var (
 		validUrl     string
@@ -38,7 +39,7 @@ func CallbackAPI(validParams interface{}) error {
 	// 将JSON对象编码为JSON字符串
 	jsonData, err := json.Marshal(validMessage)
 	if err != nil {
-		return err
+		return errors.New(schemas.JsonParseErr)
 	}
 
 	// 创建一个HTTP请求

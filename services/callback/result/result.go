@@ -3,7 +3,6 @@ package result
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/google/uuid"
 	"gitlab.example.com/zhangweijie/tool-sdk/global"
 	"gitlab.example.com/zhangweijie/tool-sdk/middleware/schemas"
@@ -47,8 +46,8 @@ func PushResult(result *global.Result) error {
 		err = util.CallbackMQ(result)
 		return err
 	case strings.ToLower(global.CallbackTypegRPC):
-		fmt.Println("------------>", global.CallbackTypegRPC)
-		return nil
+		err = util.CallbackgRPC(result)
+		return err
 	default:
 		return errors.New(schemas.WorkCallbackTypeErr)
 	}

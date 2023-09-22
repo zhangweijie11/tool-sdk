@@ -77,6 +77,12 @@ var (
 	MQMessageErr = "MQ消息发布错误"
 )
 
+// gRPC错误
+var (
+	RPCConnectErr = "RPC 连接错误"
+	RPCPushErr    = "RPC 发送错误"
+)
+
 // serializeValidatorError 参数tag验证失败转换
 func serializeValidatorError(e validator.FieldError, validatorRule map[string]map[string]string) (message string) {
 	if validatorRule == nil {

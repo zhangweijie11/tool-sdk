@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+option go_package = "./;proto";
+
+package proto;
+
+service CallbackService {
+  rpc PushProgress (PushProgressRequest) returns (PushProgressResponse);
+  rpc PushResult (PushResultRequest) returns (PushResultResponse);
+}
+
+message PushProgressRequest {
+  string workUUID = 1;
+  string serverName = 2;
+  double progress = 3;
+}
+
+message PushResultRequest {
+  string workUUID = 1;
+  string serverName = 2;
+  string result = 3;
+}
+
+message PushProgressResponse {
+  int64 code = 1;
+  string msg = 2;
+}
+
+message PushResultResponse {
+  int64 code = 1;
+  string msg = 2;
+}
