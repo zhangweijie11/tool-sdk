@@ -13,6 +13,12 @@ import (
 	"strings"
 )
 
+const (
+	callbackTypeApi  = "API"
+	callbackTypeMQ   = "MQ"
+	callbackTypegRPC = "gRPC"
+)
+
 var taskValidatorErrorMessage = map[string]string{
 	"WorkUUIDrequired": "缺少任务唯一标识",
 	"Sourcerequired":   "缺少任务来源参数",
@@ -32,25 +38,43 @@ var registerValidatorRule = map[string]map[string]string{
 	"WorkRestartSchema": taskValidatorErrorMessage,
 }
 
+// 通用参数错误
 var (
 	JsonParseErr          = "json解析失败"
 	ParameterErr          = "参数错误"
-	LengthErr             = "参数长度错误"
-	DBErr                 = "数据库错误"
-	RecordNotFoundErr     = "数据不存在"
-	RecordDeleteErr       = "数据删除错误"
-	RecordUpdateErr       = "数据更新错误"
-	GetWorkErr            = "查询任务错误"
-	UpdateWorkErr         = "更新任务错误"
-	ExecuteWorkErr        = "执行任务错误"
-	CancelWorkErr         = "停止任务错误"
-	TimeoutWorkErr        = "任务超时错误"
-	ProgressErr           = "任务进度推送错误"
-	TypeErr               = "回调/推送类型错误"
-	CallbackWorkErr       = "回调任务错误"
+	ParamsLengthErr       = "参数长度错误"
 	UnSupportOperationErr = "不支持的操作"
 	InternalErr           = "内部错误"
-	WorkTargetErr         = "任务目标错误"
+)
+
+// 数据库错误
+var (
+	DBErr             = "数据库错误"
+	RecordNotFoundErr = "数据不存在"
+	RecordDeleteErr   = "数据删除错误"
+	RecordUpdateErr   = "数据更新错误"
+)
+
+// 任务相关错误
+var (
+	WorkTargetErr       = "任务目标错误"
+	WorkGetErr          = "查询任务错误"
+	WorkUpdateErr       = "更新任务错误"
+	WorkExecuteErr      = "执行任务错误"
+	WorkCancelErr       = "停止任务错误"
+	WorkTimeoutErr      = "任务超时错误"
+	WorkProgressErr     = "任务进度错误"
+	WorkCallbackTypeErr = "回调/推送类型错误"
+	WorkCallbackErr     = "回调任务错误"
+	WorkCallbackUrlErr  = "回调地址错误"
+)
+
+// 消息队列错误
+var (
+	MQConnectErr = "MQ连接错误"
+	MQChannelErr = "MQ通道创建错误"
+	MQQueueErr   = "MQ队列声明错误"
+	MQMessageErr = "MQ消息发布错误"
 )
 
 // serializeValidatorError 参数tag验证失败转换
@@ -167,7 +191,26 @@ func ValidateLength(params interface{}, min, max int) error {
 
 	// 检查切片长度是否超过限定值
 	if sliceLength >= max || sliceLength <= min {
-		return errors.New(LengthErr)
+		return errors.New(ParamsLengthErr)
+	}
+
+	return nil
+}
+
+func ValidateCallbackUrlAndType(callbackType, callbackUrl string) error {
+	switch strings.ToLower(callbackType) {
+	case strings.ToLower(callbackTypeApi):
+		if strings.ToLower(callbackUrl) == "" {
+			return errors.New(WorkCallbackUrlErr)
+		}
+	case strings.ToLower(callbackTypeMQ):
+		if len(strings.Split(strings.ToLower(callbackUrl), ",")) != 3 {
+			return errors.New(WorkCallbackUrlErr)
+		}
+	case strings.ToLower(callbackTypegRPC):
+		return nil
+	default:
+		return errors.New(WorkCallbackTypeErr)
 	}
 
 	return nil

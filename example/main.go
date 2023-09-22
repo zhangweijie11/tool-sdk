@@ -57,7 +57,7 @@ func (ei *executorIns) ExecutorMainFunc(ctx context.Context, params map[string]i
 	}()
 	select {
 	case <-ctx.Done():
-		return errors.New(toolSchemas.CancelWorkErr)
+		return errors.New(toolSchemas.WorkCancelErr)
 	case err := <-errChan:
 		return err
 	}

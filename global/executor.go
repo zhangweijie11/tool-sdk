@@ -23,7 +23,7 @@ func (ei *ExecutorIns) ExecutorMainFunc(ctx context.Context, params map[string]i
 		// 检查任务是否被取消
 		select {
 		case <-ctx.Done():
-			return errors.New(schemas.CancelWorkErr)
+			return errors.New(schemas.WorkCancelErr)
 		default:
 			time.Sleep(1 * time.Second)
 		}

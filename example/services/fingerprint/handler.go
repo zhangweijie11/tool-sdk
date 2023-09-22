@@ -115,7 +115,7 @@ func FingerprintMainWorker(ctx context.Context, work *toolModels.Work, validPara
 
 	select {
 	case <-ctx.Done():
-		return errors.New(schemas.CancelWorkErr)
+		return errors.New(schemas.WorkCancelErr)
 	case <-quit:
 		return nil
 	}

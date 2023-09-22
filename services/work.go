@@ -7,8 +7,8 @@ import (
 	"gitlab.example.com/zhangweijie/tool-sdk/middleware/logger"
 	"gitlab.example.com/zhangweijie/tool-sdk/middleware/schemas"
 	"gitlab.example.com/zhangweijie/tool-sdk/models"
-	"gitlab.example.com/zhangweijie/tool-sdk/services/progress"
-	"gitlab.example.com/zhangweijie/tool-sdk/services/result"
+	"gitlab.example.com/zhangweijie/tool-sdk/services/callback/progress"
+	"gitlab.example.com/zhangweijie/tool-sdk/services/callback/result"
 	"time"
 )
 
@@ -18,7 +18,7 @@ func getPendingWork() (interface{}, error) {
 	defer global.ValidExecutorChan.Unlock()
 	pendingWork, err := models.GetWorkOrderCreateTime()
 	if err != nil {
-		logger.Error(schemas.GetWorkErr, err)
+		logger.Error(schemas.WorkGetErr, err)
 		return nil, err
 	}
 
@@ -26,7 +26,7 @@ func getPendingWork() (interface{}, error) {
 		// 更新任务状态为进行中
 		err = models.UpdateWork(pendingWork.UUID, "status", global.WorkStatusDoingGo)
 		if err != nil {
-			logger.Error(schemas.UpdateWorkErr, err)
+			logger.Error(schemas.WorkUpdateErr, err)
 		}
 
 		pendingWork, _ = models.GetWorkByUUID(pendingWork.UUID)
@@ -45,7 +45,7 @@ func executeWork(work *global.Work) {
 		// 更新任务状态为进行中
 		err := models.UpdateWork(work.WorkUUID, "status", global.WorkStatusDoing)
 		if err != nil {
-			logger.Error(schemas.UpdateWorkErr, err)
+			logger.Error(schemas.WorkUpdateErr, err)
 			return
 		}
 
@@ -56,7 +56,7 @@ func executeWork(work *global.Work) {
 			// 更新任务状态为进行中
 			err = models.UpdateWork(work.WorkUUID, "status", global.WorkStatusPending)
 			if err != nil {
-				logger.Error(schemas.UpdateWorkErr, err)
+				logger.Error(schemas.WorkUpdateErr, err)
 				return
 			}
 			return
@@ -65,18 +65,18 @@ func executeWork(work *global.Work) {
 		// 开始执行任务
 		err = global.ValidExecutorIns.ExecutorMainFunc(work.Context, params)
 		if err != nil {
-			logger.Error(schemas.ExecuteWorkErr, err)
+			logger.Error(schemas.WorkExecuteErr, err)
 			// 更新任务状态为失败
 			err = models.UpdateWork(work.WorkUUID, "status", global.WorkStatusFailed)
 			if err != nil {
-				logger.Error(schemas.UpdateWorkErr, err)
+				logger.Error(schemas.WorkUpdateErr, err)
 			}
 			return
 		}
 		// 更新任务状态为已完成
 		err = models.UpdateWork(work.WorkUUID, "status", global.WorkStatusDone)
 		if err != nil {
-			logger.Error(schemas.UpdateWorkErr, err)
+			logger.Error(schemas.WorkUpdateErr, err)
 			return
 		}
 		return
