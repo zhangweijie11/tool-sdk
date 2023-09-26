@@ -10,7 +10,7 @@ import (
 
 // Start 程序开始函数
 func Start(option *option.Option) {
-	err := initizlize.LoadConfig("config.yaml")
+	err := initizlize.LoadConfig(option.ValidConfig)
 	if err != nil {
 		logger.Panic("加载配置文件出现错误", err)
 	}

@@ -11,6 +11,7 @@ type Option struct {
 	ExecutorIns  global.ExecutorInterface
 	ValidModels  []interface{}
 	ValidRouters []func(*gin.Engine) gin.IRoutes
+	ValidConfig  []byte
 }
 
 var defaultOption = &Option{
