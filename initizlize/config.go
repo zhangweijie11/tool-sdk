@@ -26,8 +26,12 @@ func decryptConfig(globalConfig *config.Cfg) {
 }
 
 // LoadConfig 加载配置文件
-func LoadConfig(config []byte) (err error) {
-	err = yaml.Unmarshal(config, &global.Config)
+func LoadConfig(config string) (err error) {
+	file, err := os.ReadFile(config)
+	if err != nil {
+		return err
+	}
+	err = yaml.Unmarshal(file, &global.Config)
 	if err != nil {
 		return err
 	}

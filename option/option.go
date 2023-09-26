@@ -8,16 +8,17 @@ import (
 )
 
 type Option struct {
-	ExecutorIns  global.ExecutorInterface
-	ValidModels  []interface{}
-	ValidRouters []func(*gin.Engine) gin.IRoutes
-	ValidConfig  []byte
+	ExecutorIns     global.ExecutorInterface
+	ValidModels     []interface{}
+	ValidRouters    []func(*gin.Engine) gin.IRoutes
+	ValidConfigFile string
 }
 
 var defaultOption = &Option{
-	ExecutorIns:  global.ValidExecutorIns,
-	ValidModels:  []interface{}{&models.Work{}, &models.Task{}, &models.Result{}},
-	ValidRouters: []func(*gin.Engine) gin.IRoutes{routers.InitPingRouter, routers.InitWorkRouter},
+	ExecutorIns:     global.ValidExecutorIns,
+	ValidModels:     []interface{}{&models.Work{}, &models.Task{}, &models.Result{}},
+	ValidRouters:    []func(*gin.Engine) gin.IRoutes{routers.InitPingRouter, routers.InitWorkRouter},
+	ValidConfigFile: "config.yaml",
 }
 
 func GetDefaultOption() *Option {
