@@ -40,6 +40,7 @@ func getPendingWork() (interface{}, error) {
 func executeWork(work *global.Work) {
 	go func() {
 		defer func() {
+			work.Cancel()
 			global.ValidExecutorChan.WorkExecute <- true
 		}()
 		// 更新任务状态为进行中
@@ -85,7 +86,6 @@ func executeWork(work *global.Work) {
 		select {
 		case <-work.Context.Done():
 			return
-		default:
 		}
 	}
 }

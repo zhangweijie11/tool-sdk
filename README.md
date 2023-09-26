@@ -15,6 +15,8 @@
 - [ ] Docker 容器化
 - [ ] 自适应任务并发量调度
 
+
+
 ## 开始使用
 
 ```
@@ -32,9 +34,11 @@ go get -u gitlab.example.com/zhangweijie/tool-sdk
 
 ### 任务参数
 
-- 回调方式只有三种:API、MQ、gRPC
+> 回调方式只有三种:`API、MQ、gRPC`
 
-- 当回调方式为 API 时，回调地址为 `progress_url+/progress`（进度回调），示例：http://10.100.40.35/progress，意味着接收方必须实现` /progress` 接口。
+#### 1、API回调
+
+- 当回调方式为 `API `时，回调地址为 `progressUrl+/progress`（进度回调），示例：http://10.100.40.35/progress，意味着接收方必须实现` /progress` 接口。
 
   ```
   示例数据：
@@ -45,7 +49,7 @@ go get -u gitlab.example.com/zhangweijie/tool-sdk
   }
   ```
 
-- 当回调方式为 API 时，回调地址为 `callbackUrl+/callback/result`（进度回调），示例：http://10.100.40.35/callback/result，意味着接收方必须实现 `/callback/result` 接口。
+- 当回调方式为 `API `时，回调地址为 `callbackUrl+/callback/result`（结果回调），示例：http://10.100.40.35/callback/result，意味着接收方必须实现 `/callback/result` 接口。
 
   ```
   示例数据：
@@ -56,5 +60,58 @@ go get -u gitlab.example.com/zhangweijie/tool-sdk
   }
   ```
 
-- 当回调方式为 MQ时，回调地址会按照`,`切分，一共需要三个数据，`addr,exchange,queue`，示例：`amqp://guest:guest@rabbitmq-server:5672/,component,component`
+#### 2、MQ 回调
 
+当回调方式为 `MQ`时，回调地址会按照`,`切分，一共需要三个数据，`addr,exchange,queue`，示例：`amqp://guest:guest@rabbitmq-server:5672/,component,component`
+
+- 进度回调
+
+  ```
+  示例数据：
+  {
+         "workUUID":   "91D9e3e3-f20f-e382-8528-6efF3dDdC68A",
+         "serverName": component,
+         "progress":   96,
+  }
+  ```
+
+- 结果回调
+
+  ```
+  示例数据：
+  {
+         "workUUID":   "91D9e3e3-f20f-e382-8528-6efF3dDdC68A",
+         "serverName": component,
+         "result":   {"aaa":"bbb"},
+  }
+  ```
+
+
+
+#### 3、gRPC 回调
+
+当回调方式为`gRPC`时，回调地址为`callbackUrl`，示例：http://10.100.40.35:5001
+
+- 进度回调
+
+  ```
+  示例数据：
+  {
+         "workUUID":   "91D9e3e3-f20f-e382-8528-6efF3dDdC68A",
+         "serverName": component,
+         "progress":   96,
+  }
+  ```
+
+- 结果回调
+
+  ```
+  示例数据：
+  {
+         "workUUID":   "91D9e3e3-f20f-e382-8528-6efF3dDdC68A",
+         "serverName": component,
+         "result":   {"aaa":"bbb"},
+  }
+  ```
+
+  

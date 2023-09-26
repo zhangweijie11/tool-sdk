@@ -25,7 +25,7 @@ func (cs *CallbackService) PushResult(ctx context.Context, in *pb.PushResultRequ
 }
 
 func InitgRPC() error {
-	listen, err := net.Listen("tcp", global.Config.Server.RPCAddress)
+	listen, err := net.Listen("http", global.Config.Server.RPCAddress)
 	if err != nil {
 		return errors.New(schemas.RPCConnectErr)
 	}
