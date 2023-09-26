@@ -26,6 +26,9 @@ go get -u gitlab.example.com/zhangweijie/tool-sdk
 ### config文件
 
 - server_name为工具名称，也是数据模型work中WokrType的值，入库时会直接提取配置中的server_name
+- 需要加密的配置项字段名称需要包含`password`或者`apikey`,加密数据前缀必须为`ENC~`,满足以上标准会自动进行解密操作
+
+
 
 ### 任务参数
 
@@ -36,9 +39,9 @@ go get -u gitlab.example.com/zhangweijie/tool-sdk
   ```
   示例数据：
   {
-  			"workUUID":   "91D9e3e3-f20f-e382-8528-6efF3dDdC68A",
-  			"serverName": component,
-  			"progress":   96,
+         "workUUID":   "91D9e3e3-f20f-e382-8528-6efF3dDdC68A",
+         "serverName": component,
+         "progress":   96,
   }
   ```
 
@@ -47,10 +50,11 @@ go get -u gitlab.example.com/zhangweijie/tool-sdk
   ```
   示例数据：
   {
-  			"workUUID":   "91D9e3e3-f20f-e382-8528-6efF3dDdC68A",
-  			"serverName": component,
-  			"result":   {"aaa":"bbb"},
+         "workUUID":   "91D9e3e3-f20f-e382-8528-6efF3dDdC68A",
+         "serverName": component,
+         "result":   {"aaa":"bbb"},
   }
   ```
 
 - 当回调方式为 MQ时，回调地址会按照`,`切分，一共需要三个数据，`addr,exchange,queue`，示例：`amqp://guest:guest@rabbitmq-server:5672/,component,component`
+

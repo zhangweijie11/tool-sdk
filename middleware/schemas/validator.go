@@ -45,6 +45,7 @@ var (
 	ParamsLengthErr       = "参数长度错误"
 	UnSupportOperationErr = "不支持的操作"
 	InternalErr           = "内部错误"
+	DecryptConfigErr      = "解密配置错误"
 )
 
 // 数据库错误

@@ -8,6 +8,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"errors"
+	"gitlab.example.com/zhangweijie/tool-sdk/middleware/schemas"
 	"gorm.io/gorm/logger"
 	"io"
 )
@@ -16,7 +17,7 @@ type Cfg struct {
 	Server   ServerConfig   `yaml:"server"`
 	Elastic  ElasticConfig  `yaml:"elastic"`
 	Database DatabaseConfig `yaml:"database"`
-	Cache    CacheConfig    `yaml:"redis"`
+	Cache    CacheConfig    `yaml:"cache"`
 	Tool     interface{}    `yaml:"tool"`
 }
 
@@ -93,7 +94,7 @@ func Encrypt(sourceData []byte, secretKey string) string {
 func DecryptString(encipheredData string, secretKey string) (string, error) {
 	data, err := base64.StdEncoding.DecodeString(encipheredData)
 	if err != nil {
-		return "", errors.New("Invalid text to decrypt")
+		return "", errors.New(schemas.DecryptConfigErr)
 	}
 	key := []byte(createHash(secretKey))
 	block, err := aes.NewCipher(key)

@@ -3,26 +3,50 @@ package initizlize
 import (
 	"gitlab.example.com/zhangweijie/tool-sdk/config"
 	"gitlab.example.com/zhangweijie/tool-sdk/global"
+	"gitlab.example.com/zhangweijie/tool-sdk/middleware/logger"
+	"gitlab.example.com/zhangweijie/tool-sdk/middleware/schemas"
 	"gopkg.in/yaml.v3"
 	"os"
+	"reflect"
+	"strings"
 )
 
 // 解密 config 文件中的加密数据
-func decryptConfig(globalConfig *config.Cfg) {
+func decryptConfig(globalConfig *config.Cfg) error {
 	secretKey := global.Config.Server.SecretKey
 	if secretKey == "" {
 		secretKey = os.Getenv("PATHP")
 	}
-	decryDatas := []string{globalConfig.Database.Password, globalConfig.Elastic.Password}
-	for i, decryData := range decryDatas {
-		data, err := config.DecryptString(decryData[4:], secretKey)
-		if err == nil && i == 0 {
-			globalConfig.Database.Password = data
+
+	configValue := reflect.ValueOf(globalConfig).Elem()
+	for i := 0; i < configValue.NumField(); i++ {
+		field := configValue.Field(i)
+		// 检查字段是否是结构体
+		if field.Kind() == reflect.Struct {
+			// 获取结构体字段的值
+			structValue := reflect.Indirect(field)
+			//	 使用反射遍历结构体字段
+			for j := 0; j < structValue.NumField(); j++ {
+				structField := structValue.Field(j)
+				structFileInterface := structField.Interface()
+				if structField.Kind() == reflect.String &&
+					(strings.Contains(strings.ToLower(structValue.Type().Field(j).Name), "password") ||
+						strings.Contains(strings.ToLower(structValue.Type().Field(j).Name), "apikey")) &&
+					strings.HasPrefix(structFileInterface.(string), "ENC~") {
+					data, err := config.DecryptString(structFileInterface.(string)[4:], secretKey)
+					if err == nil {
+						structField.SetString(data)
+					} else {
+						logger.Panic(schemas.DecryptConfigErr, err)
+						return err
+					}
+				}
+			}
 		}
-		if err == nil && i == 1 {
-			globalConfig.Elastic.Password = data
-		}
+
 	}
+
+	return nil
 }
 
 // LoadConfig 加载配置文件
@@ -35,7 +59,7 @@ func LoadConfig(config string) (err error) {
 	if err != nil {
 		return err
 	}
-	//decryptConfig(global.Config)
+	err = decryptConfig(global.Config)
 	return err
 }
 
