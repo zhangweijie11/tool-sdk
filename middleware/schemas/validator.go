@@ -11,6 +11,13 @@ import (
 	"io"
 	"reflect"
 	"strings"
+	"time"
+)
+
+// 任务相关
+const (
+	TimeFormatDay    = "2006-01-02"          // 固定format时间，2006-12345
+	TimeFormatSecond = "2006-01-02 15:04:05" // 固定format时间，2006-12345
 )
 
 const (
@@ -42,10 +49,13 @@ var registerValidatorRule = map[string]map[string]string{
 var (
 	JsonParseErr          = "json解析失败"
 	ParameterErr          = "参数错误"
+	ParameterTypeErr      = "参数类型错误"
 	ParamsLengthErr       = "参数长度错误"
 	UnSupportOperationErr = "不支持的操作"
 	InternalErr           = "内部错误"
 	DecryptConfigErr      = "解密配置错误"
+	TimeCreateErr         = "无效的创建时间区间"
+	TimeUpdateErr         = "无效的更新时间区间"
 )
 
 // 数据库错误
@@ -190,7 +200,7 @@ func ValidateLength(params interface{}, min, max int) error {
 	// 检查 data 是否是一个切片类型
 	dataValue := reflect.ValueOf(params)
 	if dataValue.Kind() != reflect.Slice {
-		return errors.New(ParameterErr)
+		return errors.New(ParameterTypeErr)
 	}
 
 	// 获取切片的长度
@@ -221,4 +231,20 @@ func ValidateCallbackUrlAndType(callbackType, callbackUrl string) error {
 	}
 
 	return nil
+}
+
+// TimeRangeValidator 时间范围验证
+func TimeRangeValidator(times []string) (ts [2]time.Time, err error) {
+	times[0] = times[0] + " 00:00:00"
+	times[1] = times[1] + " 23:59:59"
+	if ts[0], err = time.Parse(TimeFormatSecond, times[0]); err != nil {
+		return ts, err
+	}
+	if ts[1], err = time.Parse(TimeFormatSecond, times[1]); err != nil {
+		return ts, err
+	}
+	if ts[0].Before(ts[1]) {
+		return ts, nil
+	}
+	return ts, err
 }

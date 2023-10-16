@@ -36,3 +36,37 @@ type WorkStopSchema struct {
 type WorkRestartSchema struct {
 	WorkUUID string `json:"work_uuid" binding:"required"` // 唯一标识
 }
+
+type WorkFilterSchema struct {
+	WorkUUID     string `json:"work_uuid"`
+	WorkType     string `json:"work_type"`
+	WorkStatus   string `json:"work_status"`
+	WorkSource   string `json:"work_source"`
+	WorkPriority uint8  `json:"work_priority" binding:"min=0,max=9"`
+	// 范围匹配
+	CreateTime []string `json:"create_time" binding:"omitempty,len=2"` // 创建时间
+	UpdateTime []string `json:"update_time" binding:"omitempty,len=2"` // 更新时间
+}
+
+// WorkListSchema 任务列表
+type WorkListSchema struct {
+	Page   int              `json:"page" binding:"min=0"`              // 请求页码 default(1) min(1)
+	Size   int              `json:"size" binding:"min=0,max=100"`      // 请求数量 default(10)，range(1-100)
+	Order  []string         `json:"order"  binding:"omitempty,unique"` // 排序
+	Filter WorkFilterSchema `json:"filter"`                            // 筛选条件
+}
+
+type WorkResultFilterSchema struct {
+	WorkUUID string `json:"work_uuid"`
+	// 范围匹配
+	CreateTime []string `json:"create_time" binding:"omitempty,len=2"` // 创建时间
+	UpdateTime []string `json:"update_time" binding:"omitempty,len=2"` // 更新时间
+}
+
+// WorkResultListSchema 任务结果列表
+type WorkResultListSchema struct {
+	Page   int                    `json:"page" binding:"min=0"`              // 请求页码 default(1) min(1)
+	Size   int                    `json:"size" binding:"min=0,max=100"`      // 请求数量 default(10)，range(1-100)
+	Order  []string               `json:"order"  binding:"omitempty,unique"` // 排序
+	Filter WorkResultFilterSchema `json:"filter"`                            // 筛选条件
+}

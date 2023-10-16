@@ -12,6 +12,12 @@ const (
 	CurdCreatFailCode int    = -400200
 )
 
+type ListResponse struct {
+	TotalCount  int64       `json:"total_count"`  // 请求资源总计数
+	FilterCount int64       `json:"filter_count"` // 请求资源过滤计数
+	Records     interface{} `json:"records"`      // 资源记录
+}
+
 func ReturnJson(Context *gin.Context, httpCode int, dataCode int, msg string, data interface{}) {
 	//Context.Header("key2020","value2020")  	//可以根据实际情况在头部添加额外的其他信息
 	Context.JSON(httpCode, gin.H{

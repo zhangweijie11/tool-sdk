@@ -1,8 +1,12 @@
 package models
 
 import (
+	"errors"
 	"gitlab.example.com/zhangweijie/tool-sdk/global"
+	"gitlab.example.com/zhangweijie/tool-sdk/middleware/schemas"
 	"gorm.io/datatypes"
+	"gorm.io/gorm"
+	"reflect"
 )
 
 type Result struct {
@@ -41,4 +45,37 @@ func DeleteResultByTaskUUID(taskUUID string) error {
 		return err
 	}
 	return nil
+}
+
+func WorkResultFilterQuery(filter *schemas.WorkResultFilterSchema) (totalCount, filterCount int64, query *gorm.DB, err error) {
+	query = global.Db.Model(&Result{})
+	global.Db.Model(&Result{}).Count(&totalCount)
+	// 判断搜索条件是否为空
+	if reflect.DeepEqual(*filter, schemas.WorkFilterSchema{}) {
+		filterCount = totalCount
+	} else {
+		if filter.WorkUUID != "" {
+			query.Where("work_uuid = ?", filter.WorkUUID)
+		}
+		// 创建时间
+		if filter.CreateTime != nil {
+			times, err := schemas.TimeRangeValidator(filter.CreateTime)
+			if err != nil {
+				return totalCount, filterCount, query, errors.New(schemas.TimeCreateErr)
+			}
+			query.Where("create_time BETWEEN ? AND ?", times[0], times[1])
+		}
+
+		// 更新时间
+		if filter.UpdateTime != nil {
+			times, err := schemas.TimeRangeValidator(filter.UpdateTime)
+			if err != nil {
+				return totalCount, filterCount, query, errors.New(schemas.TimeUpdateErr)
+			}
+			query.Where("update_time BETWEEN ? AND ?", times[0], times[1])
+		}
+	}
+	query.Count(&filterCount)
+
+	return totalCount, filterCount, query, err
 }

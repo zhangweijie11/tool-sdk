@@ -7,8 +7,8 @@ import (
 	"gorm.io/gorm"
 )
 
-// DeleteTaskByTaskUUID 删除子任务和结果
-func DeleteTaskByTaskUUID(taskUUID string) error {
+// TaskDeleteByTaskUUID 删除子任务和结果
+func TaskDeleteByTaskUUID(taskUUID string) error {
 	// 查询数据是否存在
 	task, err := models.GetTaskByTaskUUID(taskUUID)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -30,8 +30,8 @@ func DeleteTaskByTaskUUID(taskUUID string) error {
 	return nil
 }
 
-// DeleteWorkByWorkUUID 删除总任务及其子任务和结果
-func DeleteWorkByWorkUUID(workUUID string) error {
+// WorkDeleteByWorkUUID 删除总任务及其子任务和结果
+func WorkDeleteByWorkUUID(workUUID string) error {
 	// 查询数据是否存在
 	work, err := models.GetWorkByUUID(workUUID)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -58,8 +58,8 @@ func DeleteWorkByWorkUUID(workUUID string) error {
 	return nil
 }
 
-// UpdateWorkByWorkUUID 更新总任务状态
-func UpdateWorkByWorkUUID(workUUID, column, newValue string) error {
+// WorkUpdateByWorkUUID 更新总任务状态
+func WorkUpdateByWorkUUID(workUUID, column, newValue string) error {
 	// 查询数据是否存在
 	work, err := models.GetWorkByUUID(workUUID)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -72,4 +72,64 @@ func UpdateWorkByWorkUUID(workUUID, column, newValue string) error {
 	}
 
 	return nil
+}
+
+// WorkList 查看 Work 列表
+func WorkList(schema *schemas.WorkListSchema) (*schemas.ListResponse, error) {
+	var data = new(schemas.ListResponse)
+	total, filter, query, err := models.WorkFilterQuery(&schema.Filter)
+	if err != nil {
+		return nil, err
+	}
+	data.TotalCount = total
+	data.FilterCount = filter
+	// 排序
+	if len(schema.Order) == 0 {
+		schema.Order = []string{"-update_time"}
+	}
+	for i := 0; i < len(schema.Order); i++ {
+		switch schema.Order[i] {
+		case "-update_time", "-source", "-id", "-create_time":
+			query.Order(schema.Order[i][1:] + " desc")
+		case "update_time", "source", "id", "create_time":
+			query.Order(schema.Order[i])
+		}
+	}
+	// 分页
+	query = QueryPaging(query, schema.Page, schema.Size)
+	var records []models.Work
+	query.Find(&records)
+	data.Records = records
+
+	return data, nil
+}
+
+// WorkResultList 查看 Work 结果列表
+func WorkResultList(schema *schemas.WorkResultListSchema) (*schemas.ListResponse, error) {
+	var data = new(schemas.ListResponse)
+	total, filter, query, err := models.WorkResultFilterQuery(&schema.Filter)
+	if err != nil {
+		return nil, err
+	}
+	data.TotalCount = total
+	data.FilterCount = filter
+	// 排序
+	if len(schema.Order) == 0 {
+		schema.Order = []string{"-update_time"}
+	}
+	for i := 0; i < len(schema.Order); i++ {
+		switch schema.Order[i] {
+		case "-update_time", "-source", "-id", "-create_time":
+			query.Order(schema.Order[i][1:] + " desc")
+		case "update_time", "source", "id", "create_time":
+			query.Order(schema.Order[i])
+		}
+	}
+	// 分页
+	query = QueryPaging(query, schema.Page, schema.Size)
+	var records []models.Result
+	query.Find(&records)
+	data.Records = records
+
+	return data, nil
 }

@@ -92,7 +92,7 @@ func WorkCreateApi(c *gin.Context) {
 func WorkDeleteApi(c *gin.Context) {
 	var schema = new(schemas.WorkDeleteSchema)
 	if err := schemas.BindSchema(c, schema, binding.JSON); err == nil {
-		err = controller.DeleteWorkByWorkUUID(schema.WorkUUID)
+		err = controller.WorkDeleteByWorkUUID(schema.WorkUUID)
 		if err != nil {
 			schemas.Fail(c, err.Error())
 			return
@@ -128,7 +128,7 @@ func WorkGetInfoApi(c *gin.Context) {
 func WorkPauseApi(c *gin.Context) {
 	var schema = new(schemas.WorkGetInfoSchema)
 	if err := schemas.BindSchema(c, schema, binding.JSON); err == nil {
-		err = controller.UpdateWorkByWorkUUID(schema.WorkUUID, "status", global.WorkStatusPause)
+		err = controller.WorkUpdateByWorkUUID(schema.WorkUUID, "status", global.WorkStatusPause)
 		if err != nil {
 			schemas.Fail(c, schemas.RecordUpdateErr)
 			return
@@ -147,7 +147,7 @@ func WorkPauseApi(c *gin.Context) {
 func WorkStopApi(c *gin.Context) {
 	var schema = new(schemas.WorkGetInfoSchema)
 	if err := schemas.BindSchema(c, schema, binding.JSON); err == nil {
-		err = controller.UpdateWorkByWorkUUID(schema.WorkUUID, "status", global.WorkStatusStop)
+		err = controller.WorkUpdateByWorkUUID(schema.WorkUUID, "status", global.WorkStatusStop)
 		if err != nil {
 			schemas.Fail(c, schemas.RecordUpdateErr)
 			return
@@ -166,12 +166,48 @@ func WorkStopApi(c *gin.Context) {
 func WorkRestartApi(c *gin.Context) {
 	var schema = new(schemas.WorkRestartSchema)
 	if err := schemas.BindSchema(c, schema, binding.JSON); err == nil {
-		err = controller.UpdateWorkByWorkUUID(schema.WorkUUID, "status", global.WorkStatusRestart)
+		err = controller.WorkUpdateByWorkUUID(schema.WorkUUID, "status", global.WorkStatusRestart)
 		if err != nil {
 			schemas.Fail(c, schemas.RecordUpdateErr)
 			return
 		} else {
 			schemas.SuccessUpdate(c, nil)
+			return
+		}
+	} else {
+		schemas.Fail(c, err.Error())
+		return
+	}
+}
+
+// WorkListApi 获取任务结果
+func WorkListApi(c *gin.Context) {
+	var schema = new(schemas.WorkListSchema)
+	if err := schemas.BindSchema(c, schema, binding.JSON); err == nil {
+		data, err := controller.WorkList(schema)
+		if err != nil {
+			schemas.Fail(c, err.Error())
+			return
+		} else {
+			schemas.SuccessGet(c, data)
+			return
+		}
+	} else {
+		schemas.Fail(c, err.Error())
+		return
+	}
+}
+
+// WorkResultListApi 获取任务结果
+func WorkResultListApi(c *gin.Context) {
+	var schema = new(schemas.WorkResultListSchema)
+	if err := schemas.BindSchema(c, schema, binding.JSON); err == nil {
+		data, err := controller.WorkResultList(schema)
+		if err != nil {
+			schemas.Fail(c, err.Error())
+			return
+		} else {
+			schemas.SuccessGet(c, data)
 			return
 		}
 	} else {
