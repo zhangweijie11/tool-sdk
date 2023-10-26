@@ -62,6 +62,7 @@ var (
 var (
 	DBErr             = "数据库错误"
 	RecordNotFoundErr = "数据不存在"
+	RecordExistsErr   = "数据已存在"
 	RecordDeleteErr   = "数据删除错误"
 	RecordUpdateErr   = "数据更新错误"
 )

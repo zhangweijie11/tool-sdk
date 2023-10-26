@@ -51,33 +51,42 @@ func WorkCreateApi(c *gin.Context) {
 				schema.WorkUUID = uuid.New().String()
 			}
 
-			work := &models.Work{
-				UUID:           schema.WorkUUID,
-				Params:         jsonBytes,
-				Status:         global.WorkStatusPending,
-				Source:         schema.Source,
-				Priority:       schema.Priority,
-				Retry:          3,
-				CallbackUrl:    schema.CallbackUrl,
-				CallbackType:   schema.CallbackType,
-				CallbackStatus: global.WorkStatusPending,
-				WorkType:       global.Config.Server.ServerName,
-				ProgressType:   schema.ProgressType,
-				ProgressUrl:    schema.ProgressUrl,
-			}
+			dbWork, err := models.GetWorkByUUID(schema.WorkUUID)
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				work := &models.Work{
+					UUID:           schema.WorkUUID,
+					Params:         jsonBytes,
+					Status:         global.WorkStatusPending,
+					Source:         schema.Source,
+					Priority:       schema.Priority,
+					Retry:          3,
+					CallbackUrl:    schema.CallbackUrl,
+					CallbackType:   schema.CallbackType,
+					CallbackStatus: global.WorkStatusPending,
+					WorkType:       global.Config.Server.ServerName,
+					ProgressType:   schema.ProgressType,
+					ProgressUrl:    schema.ProgressUrl,
+				}
 
-			err = models.CreateWok(work)
+				err = models.CreateWok(work)
 
-			if err != nil {
-				logger.Error(schemas.DBErr, err)
-				schemas.Fail(c, schemas.DBErr)
-				return
+				if err != nil {
+					logger.Error(schemas.DBErr, err)
+					schemas.Fail(c, schemas.DBErr)
+					return
+				} else {
+					data := make(map[string]string)
+					data["work_uuid"] = work.UUID
+					schemas.SuccessCreate(c, data)
+					return
+				}
 			} else {
-				data := make(map[string]string)
-				data["work_id"] = work.UUID
-				schemas.SuccessCreate(c, data)
-				return
+				if dbWork.ID > 0 {
+					schemas.Fail(c, schemas.RecordExistsErr)
+					return
+				}
 			}
+
 		} else {
 			schemas.SuccessCreate(c, nil)
 			return
@@ -130,7 +139,7 @@ func WorkPauseApi(c *gin.Context) {
 	if err := schemas.BindSchema(c, schema, binding.JSON); err == nil {
 		err = controller.WorkUpdateByWorkUUID(schema.WorkUUID, "status", global.WorkStatusPause)
 		if err != nil {
-			schemas.Fail(c, schemas.RecordUpdateErr)
+			schemas.Fail(c, err.Error())
 			return
 		} else {
 			services.PauseWork(schema.WorkUUID)
@@ -149,7 +158,7 @@ func WorkStopApi(c *gin.Context) {
 	if err := schemas.BindSchema(c, schema, binding.JSON); err == nil {
 		err = controller.WorkUpdateByWorkUUID(schema.WorkUUID, "status", global.WorkStatusStop)
 		if err != nil {
-			schemas.Fail(c, schemas.RecordUpdateErr)
+			schemas.Fail(c, err.Error())
 			return
 		} else {
 			services.PauseWork(schema.WorkUUID)
@@ -168,7 +177,7 @@ func WorkRestartApi(c *gin.Context) {
 	if err := schemas.BindSchema(c, schema, binding.JSON); err == nil {
 		err = controller.WorkUpdateByWorkUUID(schema.WorkUUID, "status", global.WorkStatusRestart)
 		if err != nil {
-			schemas.Fail(c, schemas.RecordUpdateErr)
+			schemas.Fail(c, err.Error())
 			return
 		} else {
 			schemas.SuccessUpdate(c, nil)

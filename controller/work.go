@@ -68,7 +68,7 @@ func WorkUpdateByWorkUUID(workUUID, column, newValue string) error {
 	// 更新总任务状态
 	err = models.UpdateWork(work.UUID, column, newValue)
 	if err != nil {
-		return errors.New(schemas.RecordDeleteErr)
+		return errors.New(schemas.RecordUpdateErr)
 	}
 
 	return nil
