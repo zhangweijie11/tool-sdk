@@ -119,7 +119,9 @@ func LoopProgressResult() {
 		// 推送进度
 		case validProgress := <-global.ValidProgressChan:
 			err := progress.PushProgress(validProgress)
-			logger.Warn(fmt.Sprintf("任务 %s 进度推送失败，错误为 %s !", validProgress.WorkUUID, err))
+			if err != nil {
+				logger.Warn(fmt.Sprintf("任务 %s 进度推送失败，错误为 %s !", validProgress.WorkUUID, err))
+			}
 		// 推送结果
 		case validResult := <-global.ValidResultChan:
 			err := result.PushResult(validResult)
