@@ -14,6 +14,10 @@ import (
 
 // PushResult 发送任务结果
 func PushResult(result *global.Result) error {
+	err := models.DeleteResultByWorkUUID(result.WorkUUID)
+	if err != nil {
+		return err
+	}
 	jsonBytes, err := json.Marshal(result.Result)
 	if err != nil {
 		return err
