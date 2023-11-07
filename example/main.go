@@ -37,7 +37,7 @@ func (ei *executorIns) ValidWorkCreateParams(params map[string]interface{}) (err
 // "work": &toolmodels.Work
 // }
 func (ei *executorIns) ExecutorMainFunc(ctx context.Context, params map[string]interface{}) error {
-	errChan := make(chan error)
+	errChan := make(chan error, 2)
 	go func() {
 		work := params["work"].(*toolModels.Work)
 		var validParams fingerprint.FingerprintParams

@@ -45,6 +45,8 @@ func Start() error {
 	}
 	// 开启 pprof 性能分析
 	//go func() {
+	//	runtime.SetBlockProfileRate(1)     // 开启对阻塞操作的跟踪，block
+	//	runtime.SetMutexProfileFraction(1) // 开启对锁调用的跟踪，mutex
 	//	log.Println(http.ListenAndServe("localhost:8080", nil))
 	//}()
 
