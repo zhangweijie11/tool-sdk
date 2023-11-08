@@ -73,7 +73,7 @@ var (
 	WorkGetErr          = "查询任务错误"
 	WorkUpdateErr       = "更新任务错误"
 	WorkExecuteErr      = "执行任务错误"
-	WorkCancelErr       = "停止任务错误"
+	WorkCancelErr       = "停止任务"
 	WorkTimeoutErr      = "任务超时错误"
 	WorkProgressErr     = "任务进度错误"
 	WorkCallbackTypeErr = "回调/推送类型错误"
@@ -93,6 +93,13 @@ var (
 var (
 	RPCConnectErr = "RPC 连接错误"
 	RPCPushErr    = "RPC 发送错误"
+)
+
+// API 错误
+var (
+	APIConnectErr  = "API连接错误"
+	APIRequestErr  = "API请求错误"
+	APIResponseErr = "API响应错误"
 )
 
 // serializeValidatorError 参数tag验证失败转换

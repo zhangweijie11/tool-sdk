@@ -50,11 +50,12 @@ func executeWork(work *global.Work) {
 			return
 		}
 
+		// 获取任务参数
 		params := make(map[string]interface{})
 		validWork, err := models.GetWorkByUUID(work.WorkUUID)
 		if err != nil {
 			logger.Error(err.Error(), err)
-			// 更新任务状态为进行中
+			// 更新任务状态为待执行
 			err = models.UpdateWork(work.WorkUUID, "status", global.WorkStatusPending)
 			if err != nil {
 				logger.Error(schemas.WorkUpdateErr, err)
@@ -65,7 +66,7 @@ func executeWork(work *global.Work) {
 		params["work"] = &validWork
 		// 开始执行任务
 		err = global.ValidExecutorIns.ExecutorMainFunc(work.Context, params)
-		if err != nil {
+		if err != nil && err.Error() != schemas.WorkCancelErr {
 			logger.Error(schemas.WorkExecuteErr, err)
 			// 更新任务状态为失败
 			err = models.UpdateWork(work.WorkUUID, "status", global.WorkStatusFailed)
@@ -74,12 +75,16 @@ func executeWork(work *global.Work) {
 			}
 			return
 		}
+		if err != nil && err.Error() == schemas.WorkCancelErr {
+			return
+		}
 		// 更新任务状态为已完成
 		err = models.UpdateWork(work.WorkUUID, "status", global.WorkStatusDone)
 		if err != nil {
 			logger.Error(schemas.WorkUpdateErr, err)
 			return
 		}
+		logger.Info(fmt.Sprintf("<------------------> 任务 %s 完成 <------------------>", work.WorkUUID))
 		return
 	}()
 	for {
