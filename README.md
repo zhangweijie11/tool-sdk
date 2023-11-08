@@ -12,7 +12,7 @@
 - [x] 任务增删改查、暂停、重启
 - [x] 多方式（API、MQ、gRPC）任务结果回调、进度回调
 - [x] 全局任务并发量控制、单任务（生产者消费者模型）并发量控制
-- [ ] Docker 容器化
+- [x] Docker 容器化
 - [ ] 自适应任务并发量调度
 
 
@@ -27,7 +27,7 @@ go get -u gitlab.example.com/zhangweijie/tool-sdk
 
 ### config文件
 
-- server_name为工具名称，也是数据模型work中WokrType的值，入库时会直接提取配置中的server_name
+- server_name为工具名称，也是数据模型work中WorkType的值，入库时会直接提取配置中的server_name
 - 需要加密的配置项字段名称需要包含`password`或者`apikey`,加密数据前缀必须为`ENC~`,满足以上标准会自动进行解密操作
 
 
@@ -40,6 +40,8 @@ go get -u gitlab.example.com/zhangweijie/tool-sdk
 
 - 当回调方式为 `API `时，回调地址为 `progressUrl+/progress`（进度回调），示例：http://10.100.40.35/progress，意味着接收方必须实现` /progress` 接口。
 
+- 如果不需要进度回调，可以不传相关参数。
+
   ```
   示例数据：
   {
@@ -50,6 +52,8 @@ go get -u gitlab.example.com/zhangweijie/tool-sdk
   ```
 
 - 当回调方式为 `API `时，回调地址为 `callbackUrl+/callback/result`（结果回调），示例：http://10.100.40.35/callback/result，意味着接收方必须实现 `/callback/result` 接口。
+
+- 如果需要存储结果数据，必须添加回调地址（地址可以随机，只要有就可以），否则需要在自己的服务中手动存储结果数据。
 
   ```
   示例数据：
