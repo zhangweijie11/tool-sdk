@@ -40,7 +40,10 @@ func getPendingWork() (interface{}, error) {
 func executeWork(work *global.Work) {
 	go func() {
 		defer func() {
+			global.ValidDoingWork.Lock()
 			work.Cancel()
+			delete(global.ValidDoingWork.DoingWorkMap, work.WorkUUID)
+			global.ValidDoingWork.Unlock()
 			global.ValidExecutorChan.WorkExecute <- true
 		}()
 		// 更新任务状态为进行中
