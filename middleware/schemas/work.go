@@ -10,6 +10,7 @@ type WorkCreateSchema struct {
 	CallbackType string                 `json:"callback_type"`                            // 回调方式
 	ProgressType string                 `json:"progress_type"`                            // 进度推送方式
 	ProgressUrl  string                 `json:"progress_url"`                             // 进度推送地址
+	WorkType     string                 `json:"work_type"`                                // 任务类型
 }
 
 // WorkDeleteSchema 删除总任务参数

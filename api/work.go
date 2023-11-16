@@ -50,6 +50,9 @@ func WorkCreateApi(c *gin.Context) {
 			if schema.WorkUUID == "" {
 				schema.WorkUUID = uuid.New().String()
 			}
+			if schema.WorkType == "" {
+				schema.WorkType = global.Config.Server.ServerName
+			}
 
 			dbWork, err := models.GetWorkByUUID(schema.WorkUUID)
 			if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -63,7 +66,7 @@ func WorkCreateApi(c *gin.Context) {
 					CallbackUrl:    schema.CallbackUrl,
 					CallbackType:   schema.CallbackType,
 					CallbackStatus: global.WorkStatusPending,
-					WorkType:       global.Config.Server.ServerName,
+					WorkType:       schema.WorkType,
 					ProgressType:   schema.ProgressType,
 					ProgressUrl:    schema.ProgressUrl,
 				}
