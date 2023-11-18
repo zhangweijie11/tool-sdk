@@ -18,11 +18,11 @@ type RodScraper struct {
 	robotsMap      map[string]*robotstxt.RobotsData
 }
 
-func NewRodScraper() *RodScraper {
+func NewRodScraper(headless bool) *RodScraper {
 	rodScraper := &RodScraper{}
 	// 寻找可执行程序的路径
 	path, _ := launcher.LookPath()
-	u := launcher.New().Bin(path).Headless(false).NoSandbox(true).MustLaunch()
+	u := launcher.New().Bin(path).Headless(headless).NoSandbox(true).MustLaunch()
 	rodScraper.lock = &sync.RWMutex{}
 	rodScraper.robotsMap = make(map[string]*robotstxt.RobotsData)
 	// 如果 ControlURL 未设置， MustConnect 将自动运行 launcher.New().MustLaunch()。 默认情况下，launcher 将自动下载并使用固定版本的浏览器，以保证浏览器的行为一致性。
